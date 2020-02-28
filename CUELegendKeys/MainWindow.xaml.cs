@@ -64,14 +64,18 @@ namespace CUELegendKeys
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // Process Watcher
-            List<string> AutoSwitchProcessCaptureList = new List<string>(new string[] {
-                "League of Legends",         // Game Client
-                "LeagueClientUx",            // Launcher                
-                
+            List<ProcessItem> processItems = new List<ProcessItem>(new ProcessItem[] {
+                new ProcessItem("gameClient", "League of Legends"),
+                new ProcessItem("launcher", "LeagueClientUx")
             });
-            var pd = new ProcessDetection(AutoSwitchProcessCaptureList);
+            var processDetection = new ProcessDetection(processItems);
 
-            sample = new MainApplication(pd);
+            List<ClientMap> clientMapList = new List<ClientMap>(new ClientMap[] {
+                   new ClientMap("gameClient", new ClientTypeGame()),
+                   new ClientMap("launcher", new ClientTypeLauncher()),
+            });
+
+            sample = new MainApplication(processDetection, clientMapList);
             sample.SetRenderTarget(previewImage);
 
             // Cue Connection

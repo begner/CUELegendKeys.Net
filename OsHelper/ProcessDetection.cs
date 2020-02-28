@@ -4,61 +4,79 @@ using System.Diagnostics;
 
 namespace OsHelper
 {
+    public class ProcessItem
+    {
+        public string ProcessType { get; private set; } = "";
+        public string ProcessName { get; private set; } = "";
+        public Process Process { get; set; }
+
+        public ProcessItem(string processType, string processName)
+        {
+            this.ProcessType = processType;
+            this.ProcessName = processName;
+            this.Process = null;
+        }
+    }
+
     public class ProcessDetection : IDisposable
     {
-        private readonly List<string> autoCaptureProcessNames;
+        private readonly List<ProcessItem> processItems;
         private readonly ForegroundProcessListener foregroundProcessListener;
 
-        private Process activeProcess;
+        private ProcessItem activeProcessItem;
 
         public string GetClientType()
         {
-            return "game";
+            if (this.activeProcessItem != null)
+            {
+                return this.activeProcessItem.ProcessType;
+            }
+            return "";
         }
 
         public Windows.Foundation.Rect GetWindowRect()
         {
             Windows.Foundation.Rect pRect = new Windows.Foundation.Rect();
-            if (activeProcess != null)
+            if (this.activeProcessItem != null && this.activeProcessItem.Process != null)
             {
-                pRect = WindowEnumerationHelper.GetWindowRectXY(activeProcess.MainWindowHandle);
+                pRect = WindowEnumerationHelper.GetWindowRectXY(this.activeProcessItem.Process.MainWindowHandle);
                 // Debug.WriteLine("process: {1}/{2} {3}x{4}", "", activeProcess.MainWindowHandle, activeProcess.MainWindowTitle, pRect.X, pRect.Y);
             }
             return pRect;
         }
 
-        public ProcessDetection(List<string> titlesToCapture)
+        public ProcessDetection(List<ProcessItem> processItems)
         {
-            autoCaptureProcessNames = titlesToCapture;
-
-            foregroundProcessListener = new ForegroundProcessListener();
-            foregroundProcessListener.Callback += new ForegroundProcessListener.CallbackEventHandler(OnProcessChanged);
-            foregroundProcessListener.initializeEventListener();
+            this.processItems = processItems;
+            this.foregroundProcessListener = new ForegroundProcessListener();
+            this.foregroundProcessListener.Callback += new ForegroundProcessListener.CallbackEventHandler(OnProcessChanged);
+            this.foregroundProcessListener.initializeEventListener();
         }
 
         public void Dispose()
         {
-            foregroundProcessListener.Callback -= new ForegroundProcessListener.CallbackEventHandler(OnProcessChanged);
+            this.foregroundProcessListener.Callback -= new ForegroundProcessListener.CallbackEventHandler(OnProcessChanged);
         }
 
         public void OnProcessChanged(IntPtr hwnd)
         {
-            Process process = GetCaptureableProcess();
-            if (process != null)
+            ProcessItem pItem = GetCaptureableProcess();
+            if (pItem != null && (this.activeProcessItem == null || this.activeProcessItem.ProcessName != pItem.ProcessName))
             {
-                if (activeProcess == null || activeProcess.ProcessName != process.ProcessName)
-                {
-                    Debug.WriteLine("onProcessChanged: {1}/{2}", "", process.MainWindowHandle, process.MainWindowTitle);
-                    activeProcess = process;
-                }
+                Debug.WriteLine("onProcessChanged: {1}/{2}", "", pItem.Process.MainWindowHandle, pItem.Process.MainWindowTitle);
+                this.activeProcessItem = pItem;
+            }
+            else
+            {
+                this.activeProcessItem = null;
             }
         }
 
-        private Process GetCaptureableProcess()
+        private ProcessItem GetCaptureableProcess()
         {
-            foreach (string pName in autoCaptureProcessNames)
+            foreach (ProcessItem pItem in processItems)
             {
-                var ps = Process.GetProcessesByName(pName);
+                var ps = Process.GetProcessesByName(pItem.ProcessName);
 
                 if (ps.Length > 0)
                 {
@@ -66,7 +84,8 @@ namespace OsHelper
                     if (WindowEnumerationHelper.IsWindowValidForCapture(process.MainWindowHandle))
                     {
                         // Debug.WriteLine("process: {1}/{2}/{3}", "", pName, process.MainWindowHandle, process.MainWindowTitle);
-                        return process;
+                        pItem.Process = process;
+                        return pItem;
                     }
                 }
             }

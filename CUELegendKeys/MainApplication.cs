@@ -37,6 +37,18 @@ using CaptureCore;
 
 namespace CUELegendKeys
 {
+    public class ClientMap
+    {
+        public string ProcessType { get; private set; } = "";
+        public IClientType Client { get; private set; }
+
+        public ClientMap(string processType, IClientType client)
+        {
+            this.ProcessType = processType;
+            this.Client = client;
+        }
+    }
+
     public class MainApplication : IDisposable
     {
         private ScreenCapture capture;
@@ -45,6 +57,8 @@ namespace CUELegendKeys
         private ICueBridge iCueBridge;
         private readonly FPSCounter fpsCounter;
         private readonly ProcessDetection processDetection;
+
+        private readonly IEnumerable<ClientMap> ClientMapping;
 
         private String GetCurrentClientTyp() {
             return processDetection.GetClientType();
@@ -69,22 +83,21 @@ namespace CUELegendKeys
 
         private bool frameWorkInProgress = false;
 
-        public MainApplication(ProcessDetection processDetection)
+        public MainApplication(ProcessDetection processDetection, List<ClientMap> clientMapList)
         {
             this.processDetection = processDetection;
-            fpsCounter = new FPSCounter();
+            this.ClientMapping = clientMapList.AsEnumerable();
+            this.fpsCounter = new FPSCounter();
             
-
             IEnumerable<MonitorInfo> monitors = MonitorEnumerationHelper.GetMonitors();
             IEnumerable<MonitorInfo> primMons = from primaryMonitor in monitors
                                                 where primaryMonitor.IsPrimary == true
                                                 select primaryMonitor;
             MonitorInfo monitor = primMons.FirstOrDefault();
-
             GraphicsCaptureItem item = CaptureHelper.CreateItemForMonitor(monitor.Hmon);
             if (item != null)
             {
-                StartCaptureFromItem(item);
+                this.StartCaptureFromItem(item);
             }
         }
 
@@ -124,45 +137,30 @@ namespace CUELegendKeys
                     }
                     catch (OpenCvSharp.OpenCVException ocve)
                     {
-                        Debug.WriteLine("OpenCvSharp.OpenCVException: {1}", "", ocve.Message);
-                        Debug.WriteLine("Rect: {1}/{2}/{3}/{4}", "", appRect.X, appRect.Y, appRect.Width, appRect.Height, ocve.Message);
-                        Debug.WriteLine("Mat: {1}/{2}", "", mat.Width, mat.Height);
+                        // Debug.WriteLine("OpenCvSharp.OpenCVException: {1}", "", ocve.Message);
+                        // Debug.WriteLine("Rect: {1}/{2}/{3}/{4}", "", appRect.X, appRect.Y, appRect.Width, appRect.Height, ocve.Message);
+                        // Debug.WriteLine("Mat: {1}/{2}", "", mat.Width, mat.Height);
+                        mat = null;
                     }
 
-
-                    if (GetCurrentClientTyp() == "game")
+                    ClientMap clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == this.GetCurrentClientTyp() select ClientMap).FirstOrDefault();
+                    IClientType client;
+                    if (clientMap != null && mat != null)
                     {
-                        /*
-                        
-                        if (mat.Width > 565 + 738)
-                        {
-                            mat = new Mat(mat, new Rect(565, mat.Height - 142, 738, 142));
-                        }
-                        */
-                        
-
+                        client = clientMap.Client;
+                        client.CaptureResult = mat;
                     }
                     else
                     {
-                        var ledResult = new LedResult();
-                        var indexer = mat.GetGenericIndexer<OpenCvSharp.Vec3b>();
-                        int getX = 60;
-                        int getY = 50;
-                        for (int i = 0; i < 4; i++)
-                        {
-                            OpenCvSharp.Vec3b color = indexer[getY, getX + i];
-                            ledResult.setSkill(i, new LedResults.Color(color.Item2, color.Item1, color.Item0));
-                        }
-                        iCueBridge.SetResult(ledResult);
-
-                        mat.Rectangle(new OpenCvSharp.Point(getX - 1, getY - 1), new OpenCvSharp.Point(getX + 5, getY + 1), new OpenCvSharp.Scalar(164, 196, 215, 255));
+                        client = new ClientTypeNone();
                     }
 
-                    string fpsShowBuffer = "FPS: " + fpsCounter.GetFPS();
-                    mat.PutText(fpsShowBuffer, new OpenCvSharp.Point(20, 20), OpenCvSharp.HersheyFonts.HersheyPlain, 0.8, new OpenCvSharp.Scalar(164, 196, 215, 255));
+                    client.SetICueBridge(ref iCueBridge);
+                    client.FPS = fpsCounter.GetFPS();
 
-                    renderTarget.Source = mat.ToBitmapSource();
-                    
+                    client.DoFrameAction();
+                    renderTarget.Source = client.GetRenderTargetBitmapSource();
+
                     GC.Collect();
                     
                 }

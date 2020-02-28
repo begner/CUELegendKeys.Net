@@ -83,6 +83,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Clients\ClientTypeGame.cs" />
+    <Compile Include="Clients\ClientTypeNone.cs" />
+    <Compile Include="Clients\ClientTypeLauncher.cs" />
+    <Compile Include="Clients\ClientType.cs" />
     <Compile Include="MainApplication.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
