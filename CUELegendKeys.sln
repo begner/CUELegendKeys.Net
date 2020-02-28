@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptureCore", "CaptureCore\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedResults", "LedResults\LedResults.csproj", "{23B6A02B-34EC-4296-ABE6-BAA8BD409125}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsair.Native", "Corsair.Native\Corsair.Native.csproj", "{F1854938-B53B-4C43-90C8-3705231F711A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,18 @@ Global
 		{23B6A02B-34EC-4296-ABE6-BAA8BD409125}.Release|x64.Build.0 = Release|Any CPU
 		{23B6A02B-34EC-4296-ABE6-BAA8BD409125}.Release|x86.ActiveCfg = Release|Any CPU
 		{23B6A02B-34EC-4296-ABE6-BAA8BD409125}.Release|x86.Build.0 = Release|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Debug|x64.Build.0 = Debug|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Debug|x86.Build.0 = Debug|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Release|x64.ActiveCfg = Release|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Release|x64.Build.0 = Release|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1854938-B53B-4C43-90C8-3705231F711A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

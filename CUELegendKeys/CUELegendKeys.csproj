@@ -142,9 +142,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CorsairRGB.NET">
-      <Version>1.0.0</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
       <Version>10.0.18362.2002-preview</Version>
     </PackageReference>
@@ -166,8 +163,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)iCueSDK\bin\$(ConfigurationName)\x64\CUESDK_2015.dll" "$(TargetDir)dll\x64\" /Y
-xcopy "$(SolutionDir)iCueSDK\bin\$(ConfigurationName)\x86\CUESDK_2015.dll" "$(TargetDir)dll\x86\" /Y
+    <PostBuildEvent>xcopy "$(SolutionDir)Corsair.Native\redist\x64\*.dll" "$(TargetDir)x64\" /Y
+xcopy "$(SolutionDir)Corsair.Native\redist\i386\*.dll" "$(TargetDir)i386\" /Y
 xcopy "$(SolutionDir)CaptureCore\bin\$(ConfigurationName)\OpenCvSharp.dll" "$(TargetDir)" /Y
 </PostBuildEvent>
   </PropertyGroup>

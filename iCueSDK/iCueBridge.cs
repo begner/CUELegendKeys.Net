@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
-using CUE.NET;
-using CUE.NET.Devices;
-using CUE.NET.Devices.Keyboard;
-using CUE.NET.Devices.Generic;
-using CUE.NET.Brushes;
 using LedResults;
+using Corsair.Native;
+using System.Runtime.InteropServices;
 
 namespace iCueSDK
 {
     public class ICueBridge
     {
-        // private Keyboard keyboard;
+        private Keyboard Keyboard;
         // private ICueDevice mouse;
         // private ICueDevice mousemat;
-
         public void SetResult(LedResult result)
         {
+            /*
             var keyboard = CueSDK.KeyboardSDK;
             keyboard.Brush = (SolidColorBrush)CorsairColor.Transparent;
 
@@ -26,31 +23,41 @@ namespace iCueSDK
             keyboard['R'].Color = new CorsairColor((byte)result.getSkill(3).R, (byte)result.getSkill(3).G, (byte)result.getSkill(3).B);
             // keyboard[CorsairKeyboardKeyId.B].Color = new CorsairColor(0, 255, 0);
             keyboard.Update();
+            */
         }
 
         public ICueBridge()
         {
-            CueSDK.Initialize(true);
-            Debug.WriteLine("SDK Available: {1}", "", CueSDK.IsSDKAvailable());
-            foreach (ICueDevice device in CueSDK.InitializedDevices)
-            {
-                // Debug.WriteLine("Device Found: {1}/{2}", "", device.DeviceInfo.Model, device.DeviceInfo.Type);
-                switch (device.DeviceInfo.Type)
-                {
-                    case CUE.NET.Devices.Generic.Enums.CorsairDeviceType.Keyboard:
-                        // keyboard = new Keyboard();
-                        break;
-                    case CUE.NET.Devices.Generic.Enums.CorsairDeviceType.Mouse:
-                        // mouse = device;
-                        break;
-                    case CUE.NET.Devices.Generic.Enums.CorsairDeviceType.Mousemat:
-                        // mousemat = device;
-                        break;
-                }
-            }
+            CUESDK.LoadCUESDK();
+            CorsairProtocolDetails details = CUESDK.CorsairPerformProtocolHandshake();
 
-           
+            int devCount = CUESDK.CorsairGetDeviceCount();
+            Debug.WriteLine("CorsairGetDeviceCount: {1}", "", devCount);
+
+            for (int deviceIndex = 0; deviceIndex < devCount; deviceIndex++)
+            {
+                IntPtr deviceInfoPointer = CUESDK.CorsairGetDeviceInfo(deviceIndex);
+                CorsairDeviceInfo DeviceInfo = (CorsairDeviceInfo)Marshal.PtrToStructure(deviceInfoPointer, typeof(CorsairDeviceInfo));
+                switch(DeviceInfo.type)
+                {
+                    case CorsairDeviceType.Keyboard:
+                        
+                        IntPtr ledPositionPointer = CUESDK.CorsairGetLedPositionsByDeviceIndex(deviceIndex);
+                        CorsairLedPositions LedPositions = (CorsairLedPositions)Marshal.PtrToStructure(ledPositionPointer, typeof(CorsairLedPositions));
+
+                        Debug.WriteLine("Keyboard LedPosition: {1}", "", LedPositions.numberOfLed);
+
+                        Keyboard = new Keyboard();
+                        Keyboard.setLedPositions(LedPositions.getLedPositions());
+                        Keyboard.setDeviceInfo(DeviceInfo);
+                        break;
+
+                }
+                Debug.WriteLine("DeviceInfo: {1}", "", DeviceInfo.type);
+            }
         }
+
+        
 
 
     }

@@ -1,27 +1,32 @@
-﻿using CUE.NET;
-using CUE.NET.Brushes;
-using CUE.NET.Devices.Keyboard;
-using CUE.NET.Devices.Generic;
-using System.Diagnostics;
-using CUE.NET.Devices.Keyboard.Enums;
+﻿using Corsair.Native;
+using System.Collections.Generic;
 
 namespace iCueSDK
 {
     class Keyboard
     {
-		private CorsairKeyboard keyboard;
-		
+		private CorsairDeviceInfo DeviceInfo;
+		private List<CorsairLedPosition> Leds;
+
 		public Keyboard()
 		{
-			keyboard = CueSDK.KeyboardSDK;
-			keyboard.Brush = (SolidColorBrush)CorsairColor.Transparent;
-
-			keyboard['A'].Color = new CorsairColor(255, 0, 0);
-			keyboard['B'].Color = new CorsairColor(0, 255, 0);
-			// keyboard[CorsairKeyboardKeyId.B].Color = new CorsairColor(0, 255, 0);
-			keyboard.Update();
+			
 		}
 
-		public object Color { get; }
+		public void addLed(CorsairLedPosition led)
+		{
+			this.Leds.Add(led);
+		}
+		public void setLedPositions(List<CorsairLedPosition> LedPositions)
+		{
+			this.Leds = LedPositions;
+		}
+
+
+		public void setDeviceInfo(CorsairDeviceInfo deviceInfo)
+		{
+			this.DeviceInfo = deviceInfo;
+		}
+
 	}
 }
