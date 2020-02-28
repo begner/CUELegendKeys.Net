@@ -37,7 +37,6 @@ using Windows.Foundation.Metadata;
 using Windows.Graphics.Capture;
 using Windows.UI.Composition;
 using OsHelper;
-using iCueSDK;
 using System.Collections.Generic;
 // using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -45,7 +44,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing;
 using OsHelper;
-
+using iCueSDK;
 
 namespace CUELegendKeys
 {
@@ -54,7 +53,7 @@ namespace CUELegendKeys
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainApplication sample;
+        private MainApplication mainApplication;
 
         public MainWindow()
         {
@@ -63,6 +62,7 @@ namespace CUELegendKeys
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            
             // Process Watcher
             List<ProcessItem> processItems = new List<ProcessItem>(new ProcessItem[] {
                 new ProcessItem("gameClient", "League of Legends"),
@@ -75,13 +75,13 @@ namespace CUELegendKeys
                    new ClientMap("launcher", new ClientTypeLauncher()),
             });
 
-            sample = new MainApplication(processDetection, clientMapList);
-            sample.SetRenderTarget(previewImage);
+            mainApplication = new MainApplication(processDetection, clientMapList);
+            mainApplication.SetRenderTarget(previewImage);
 
             // Cue Connection
             var cb = new ICueBridge();
+            mainApplication.setiCueBridge(ref cb);
 
-            sample.SetCueBridge(cb);
         }
     }
 }

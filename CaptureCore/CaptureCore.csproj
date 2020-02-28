@@ -57,7 +57,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Composition.WindowsRuntimeHelpers\Composition.WindowsRuntimeHelpers.csproj" />
+    <ProjectReference Include="..\Composition.WindowsRuntimeHelpers\Composition.WindowsRuntimeHelpers.csproj">
+      <Project>{EC969287-3D35-410A-806C-0BAAA7564911}</Project>
+      <Name>Composition.WindowsRuntimeHelpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OsHelper\OsHelper.csproj">
       <Project>{10e8d582-779b-425b-93ba-c737e3af8815}</Project>
       <Name>OsHelper</Name>

@@ -23,7 +23,7 @@ namespace CUELegendKeys
                 OpenCvSharp.Vec3b color = indexer[getY, getX + i];
                 ledResult.setSkill(i, new LedResults.Color(color.Item2, color.Item1, color.Item0));
             }
-            GetICueBridge().SetResult(ledResult);
+            this.GetICueBridge().SetResult(ledResult);
 
             this.CaptureResult.Rectangle(new OpenCvSharp.Point(getX - 1, getY - 1), new OpenCvSharp.Point(getX + 5, getY + 1), new OpenCvSharp.Scalar(164, 196, 215, 255));
             

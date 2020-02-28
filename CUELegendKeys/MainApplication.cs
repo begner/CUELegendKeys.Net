@@ -54,11 +54,17 @@ namespace CUELegendKeys
         private ScreenCapture capture;
 
         private System.Windows.Controls.Image renderTarget = null;
-        private ICueBridge iCueBridge;
         private readonly FPSCounter fpsCounter;
         private readonly ProcessDetection processDetection;
-
         private readonly IEnumerable<ClientMap> ClientMapping;
+
+        private ICueBridge ICueBridge;
+        public void setiCueBridge(ref ICueBridge iCueBridge)
+        {
+            this.ICueBridge = iCueBridge;
+        }
+
+
 
         private String GetCurrentClientTyp() {
             return processDetection.GetClientType();
@@ -102,8 +108,7 @@ namespace CUELegendKeys
         }
 
         public void SetRenderTarget(System.Windows.Controls.Image image) => renderTarget = image;
-        public void SetCueBridge(ICueBridge cb) => iCueBridge = cb;
-
+        
         public int GetLastFPS()
         {
             return fpsCounter.GetFPS();
@@ -155,8 +160,9 @@ namespace CUELegendKeys
                         client = new ClientTypeNone();
                     }
 
-                    client.SetICueBridge(ref iCueBridge);
+                    // client.SetICueBridge(ref iCueBridge);
                     client.FPS = fpsCounter.GetFPS();
+                    client.SetICueBridge(ref this.ICueBridge);
 
                     client.DoFrameAction();
                     renderTarget.Source = client.GetRenderTargetBitmapSource();
