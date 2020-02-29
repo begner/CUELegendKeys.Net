@@ -51,6 +51,7 @@ namespace OsHelper
             this.foregroundProcessListener = new ForegroundProcessListener();
             this.foregroundProcessListener.Callback += new ForegroundProcessListener.CallbackEventHandler(OnProcessChanged);
             this.foregroundProcessListener.initializeEventListener();
+            this.OnProcessChanged((IntPtr)null);
         }
 
         public void Dispose()
@@ -63,7 +64,7 @@ namespace OsHelper
             ProcessItem pItem = GetCaptureableProcess();
             if (pItem != null && (this.activeProcessItem == null || this.activeProcessItem.ProcessName != pItem.ProcessName))
             {
-                Debug.WriteLine("onProcessChanged: {1}/{2}", "", pItem.Process.MainWindowHandle, pItem.Process.MainWindowTitle);
+                Debug.WriteLine("onProcessChanged: {1} / {2}", "", pItem.ProcessType, pItem.Process.MainWindowHandle, pItem.Process.MainWindowTitle);
                 this.activeProcessItem = pItem;
             }
             else

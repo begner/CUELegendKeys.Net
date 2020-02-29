@@ -28,7 +28,7 @@ namespace OsHelper
         
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            Debug.WriteLine("Window Changed: {0} ({1})", "", WindowEnumerationHelper.GetForegroundWindow());
+            // Debug.WriteLine("Window Changed: {0} ({1})", "", WindowEnumerationHelper.GetForegroundWindow());
             if (Callback != null)
             {
                 Callback(hwnd);

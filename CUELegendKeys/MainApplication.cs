@@ -53,18 +53,18 @@ namespace CUELegendKeys
     {
         private ScreenCapture capture;
 
-        private System.Windows.Controls.Image renderTarget = null;
+        public System.Windows.Controls.Image previewCaptureImageRenderTarget { get; set; } = null;
+        
         private readonly FPSCounter fpsCounter;
         private readonly ProcessDetection processDetection;
         private readonly IEnumerable<ClientMap> ClientMapping;
+               
 
         private ICueBridge ICueBridge;
         public void setiCueBridge(ref ICueBridge iCueBridge)
         {
             this.ICueBridge = iCueBridge;
         }
-
-
 
         private String GetCurrentClientTyp() {
             return processDetection.GetClientType();
@@ -87,27 +87,42 @@ namespace CUELegendKeys
             return newRect;
         }
 
-        private bool frameWorkInProgress = false;
+        private bool frameAnalysisInProgress = false;
+
+
+        private Mat mockImage = null;
 
         public MainApplication(ProcessDetection processDetection, List<ClientMap> clientMapList)
         {
             this.processDetection = processDetection;
             this.ClientMapping = clientMapList.AsEnumerable();
             this.fpsCounter = new FPSCounter();
-            
+
             IEnumerable<MonitorInfo> monitors = MonitorEnumerationHelper.GetMonitors();
             IEnumerable<MonitorInfo> primMons = from primaryMonitor in monitors
                                                 where primaryMonitor.IsPrimary == true
                                                 select primaryMonitor;
             MonitorInfo monitor = primMons.FirstOrDefault();
             GraphicsCaptureItem item = CaptureHelper.CreateItemForMonitor(monitor.Hmon);
+
+
+            switch (Settings.AppRunMode)
+            {
+                case SettingsAppRunMode.MockGame:
+                    this.mockImage = new Mat(Settings.MockImageGame);
+                    break;
+                case SettingsAppRunMode.MockLauncher:
+                    this.mockImage = new Mat(Settings.MockImageLauncher);
+                    break;
+            }
+
             if (item != null)
             {
                 this.StartCaptureFromItem(item);
             }
         }
 
-        public void SetRenderTarget(System.Windows.Controls.Image image) => renderTarget = image;
+
         
         public int GetLastFPS()
         {
@@ -121,43 +136,66 @@ namespace CUELegendKeys
 
         public void FrameReady(object sender, EventArgs e)
         {
-            if (!frameWorkInProgress)
+            try
             {
-                frameWorkInProgress = true;
-
-                if (renderTarget != null)
+                if (!frameAnalysisInProgress)
                 {
-                    var mat = capture.getLastFrameAsMat();
-                    
+                    frameAnalysisInProgress = true;
 
-                    if (mat == null)
-                    {
-                        return;
-                    }
+                    IClientType client = null;
+                    ClientMap clientMap = null;
 
-                    Rect appRect = this.GetCurrentProcessWindowRect();
-                    try
+                    // Capture Screen 
+                    switch (Settings.AppRunMode)
                     {
-                        mat = new Mat(mat, appRect);
-                    }
-                    catch (OpenCvSharp.OpenCVException ocve)
-                    {
-                        // Debug.WriteLine("OpenCvSharp.OpenCVException: {1}", "", ocve.Message);
-                        // Debug.WriteLine("Rect: {1}/{2}/{3}/{4}", "", appRect.X, appRect.Y, appRect.Width, appRect.Height, ocve.Message);
-                        // Debug.WriteLine("Mat: {1}/{2}", "", mat.Width, mat.Height);
-                        mat = null;
-                    }
+                        case SettingsAppRunMode.Normal:
 
-                    ClientMap clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == this.GetCurrentClientTyp() select ClientMap).FirstOrDefault();
-                    IClientType client;
-                    if (clientMap != null && mat != null)
-                    {
-                        client = clientMap.Client;
-                        client.CaptureResult = mat;
-                    }
-                    else
-                    {
-                        client = new ClientTypeNone();
+                            // Capture Image
+                            Mat capturedImage = capture.getLastFrameAsMat();
+                            if (capturedImage == null)
+                            {
+                                frameAnalysisInProgress = false;
+                                return;
+                            }
+
+                            // Cut out current Window
+                            Rect appRect = this.GetCurrentProcessWindowRect();
+                            try
+                            {
+                                capturedImage = new Mat(capturedImage, appRect);
+                            }
+                            catch (OpenCvSharp.OpenCVException ocve)
+                            {
+                                // Debug.WriteLine("OpenCvSharp.OpenCVException: {1}", "", ocve.Message);
+                                // Debug.WriteLine("Rect: {1}/{2}/{3}/{4}", "", appRect.X, appRect.Y, appRect.Width, appRect.Height, ocve.Message);
+                                // Debug.WriteLine("Mat: {1}/{2}", "", mat.Width, mat.Height);
+                                capturedImage = null;
+                            }
+
+                            // Detect Client Type
+                            clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == this.GetCurrentClientTyp() select ClientMap).FirstOrDefault();
+                            if (clientMap != null && capturedImage != null)
+                            {
+                                client = clientMap.Client;
+                                client.CaptureResult = capturedImage;
+                            }
+                            else
+                            {
+                                client = new ClientTypeNone();
+                            }
+                            break;
+
+                        case SettingsAppRunMode.MockLauncher:
+                            clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == "launcher" select ClientMap).FirstOrDefault();
+                            client = clientMap.Client;
+                            client.CaptureResult = this.mockImage;
+                            break;
+
+                        case SettingsAppRunMode.MockGame:
+                            clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == "gameClient" select ClientMap).FirstOrDefault();
+                            client = clientMap.Client;
+                            client.CaptureResult = this.mockImage;
+                            break;
                     }
 
                     // client.SetICueBridge(ref iCueBridge);
@@ -165,29 +203,53 @@ namespace CUELegendKeys
                     client.SetICueBridge(ref this.ICueBridge);
 
                     client.DoFrameAction();
-                    renderTarget.Source = client.GetRenderTargetBitmapSource();
+                    previewCaptureImageRenderTarget.Source = client.GetRenderTargetBitmapSource();
 
                     GC.Collect();
-                    
+
+                    fpsCounter.IncreaseFrame();
                 }
-                frameWorkInProgress = false;
-                fpsCounter.IncreaseFrame();
+            }
+            catch(Exception myException)
+            {
+                frameAnalysisInProgress = false;
+            }
+            finally {
+                frameAnalysisInProgress = false;
             }
 
         }
 
+        System.Windows.Threading.DispatcherTimer mockTimer = new System.Windows.Threading.DispatcherTimer();
         public void StartCaptureFromItem(GraphicsCaptureItem item)
         {
-            StopCapture();
-            capture = new ScreenCapture(item);
-            capture.FrameReady += FrameReady;
-            capture.StartCapture();
+            if (Settings.AppRunMode == SettingsAppRunMode.Normal)
+            {
+                this.StopCapture();
+                capture = new ScreenCapture(item);
+                capture.FrameReady += FrameReady;
+                capture.StartCapture();
+            }
+            else
+            {
+                // Hook up the Elapsed event for the timer. 
+                mockTimer.Tick += new EventHandler(FrameReady);
+                mockTimer.Interval = new TimeSpan(0, 0, 1);
+                mockTimer.Start();
+            }
         }
-
+            
         public void StopCapture()
         {
-            // capture.FrameReady -= FrameReady;
-            capture?.Dispose();
+            if (Settings.AppRunMode == SettingsAppRunMode.Normal)
+            {
+                // capture.FrameReady -= FrameReady;
+                capture?.Dispose();
+            }
+            else
+            {
+                mockTimer.Stop();
+            }
         }
     }
 }

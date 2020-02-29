@@ -29,9 +29,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CUELegendKeys"
         mc:Ignorable="d"
-        Title="CUELegendKeys" Height="450" Width="800"
+        Title="CUELegendKeys" Height="474" Width="836"
         Loaded="Window_Loaded">
     <Grid>
-        <Image x:Name="previewImage" Canvas.Left="246" Canvas.Top="62" Margin="21,27,25,20" Stretch="Fill"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Grid.Column="0" >
+            <WrapPanel Height="170" VerticalAlignment="Top" Width="100">
+                <Button Content="Button1" Margin="0,10,0,0" VerticalAlignment="Top" Width="100"/>
+                <Button Content="Button1" Margin="0,10,0,0" VerticalAlignment="Top" Width="100"/>
+            </WrapPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <WrapPanel ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+                    <Image x:Name="previewImageSkillQ" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageSkillW" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageSkillE" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageSkillR" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageSkillD" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageSkillF" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+
+                    <Image x:Name="previewImageItem1" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageItem2" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageItem3" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageItem4" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageItem5" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageItem6" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageItem7" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <Image x:Name="previewImageBack" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+
+                    <Image x:Name="previewCharImage" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="200" Width="200"/>
+                </WrapPanel>
+            </ScrollViewer>
+
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="0" >
+            <Image x:Name="previewCaptureImage" Margin="10,10,10,10"/>
+        </DockPanel>
     </Grid>
+    
 </Window>

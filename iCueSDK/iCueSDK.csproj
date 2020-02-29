@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LedStrip.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="iCueBridge.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

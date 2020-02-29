@@ -83,6 +83,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Clients\ClientTypeGame.cs" />
     <Compile Include="Clients\ClientTypeNone.cs" />
     <Compile Include="Clients\ClientTypeLauncher.cs" />
@@ -166,6 +167,6 @@
     <PostBuildEvent>xcopy "$(SolutionDir)Corsair.Native\redist\x64\*.dll" "$(TargetDir)x64\" /Y
 xcopy "$(SolutionDir)Corsair.Native\redist\i386\*.dll" "$(TargetDir)i386\" /Y
 xcopy "$(SolutionDir)CaptureCore\bin\$(ConfigurationName)\OpenCvSharp.dll" "$(TargetDir)" /Y
-</PostBuildEvent>
+xcopy "$(SolutionDir)mock" "$(TargetDir)mock\" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

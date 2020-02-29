@@ -58,6 +58,7 @@ namespace CUELegendKeys
         public MainWindow()
         {
             InitializeComponent();
+            this.Left = 2000;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -70,13 +71,33 @@ namespace CUELegendKeys
             });
             var processDetection = new ProcessDetection(processItems);
 
+            ClientTypeGame gameClient = new ClientTypeGame();
+            gameClient.previewImageSkillQRenderTarget = previewImageSkillQ;
+            gameClient.previewImageSkillWRenderTarget = previewImageSkillW;
+            gameClient.previewImageSkillERenderTarget = previewImageSkillE;
+            gameClient.previewImageSkillRRenderTarget = previewImageSkillR;
+            gameClient.previewImageSkillDRenderTarget = previewImageSkillD;
+            gameClient.previewImageSkillFRenderTarget = previewImageSkillF;
+
+            gameClient.previewImageItem1RenderTarget = previewImageItem1;
+            gameClient.previewImageItem2RenderTarget = previewImageItem2;
+            gameClient.previewImageItem3RenderTarget = previewImageItem3;
+            gameClient.previewImageItem4RenderTarget = previewImageItem4;
+            gameClient.previewImageItem5RenderTarget = previewImageItem5;
+            gameClient.previewImageItem6RenderTarget = previewImageItem6;
+            gameClient.previewImageItem7RenderTarget = previewImageItem7;
+
+            gameClient.previewCharImageRenderTarget = previewCharImage;
+
             List<ClientMap> clientMapList = new List<ClientMap>(new ClientMap[] {
-                   new ClientMap("gameClient", new ClientTypeGame()),
+                   new ClientMap("gameClient", gameClient),
                    new ClientMap("launcher", new ClientTypeLauncher()),
             });
 
+            
             mainApplication = new MainApplication(processDetection, clientMapList);
-            mainApplication.SetRenderTarget(previewImage);
+            mainApplication.previewCaptureImageRenderTarget = previewCaptureImage;
+
 
             // Cue Connection
             var cb = new ICueBridge();
@@ -85,3 +106,4 @@ namespace CUELegendKeys
         }
     }
 }
+

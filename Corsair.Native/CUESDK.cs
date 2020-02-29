@@ -156,13 +156,13 @@ namespace Corsair.Native
         /// and follows after one or more calls of CorsairSetLedsColorsBufferByDeviceIndex to set the LEDs buffer.
         /// This function does not take logical layout into account.
         /// </summary>
-        internal static bool CorsairSetLedsColorsBufferByDeviceIndex(int deviceIndex, int size, IntPtr ledsColors) => _corsairSetLedsColorsBufferByDeviceIndexPointer(deviceIndex, size, ledsColors);
+        public static bool CorsairSetLedsColorsBufferByDeviceIndex(int deviceIndex, int size, IntPtr ledsColors) => _corsairSetLedsColorsBufferByDeviceIndexPointer(deviceIndex, size, ledsColors);
 
         /// <summary>
         /// CUE-SDK: writes to the devices LEDs colors buffer which is previously filled by the CorsairSetLedsColorsBufferByDeviceIndex function.
         /// This function executes synchronously, if you are concerned about delays consider using CorsairSetLedsColorsFlushBufferAsync
         /// </summary>
-        internal static bool CorsairSetLedsColorsFlushBuffer() => _corsairSetLedsColorsFlushBufferPointer();
+        public static bool CorsairSetLedsColorsFlushBuffer() => _corsairSetLedsColorsFlushBufferPointer();
         
         /// <summary>
         /// CUE-SDK: get current color for the list of requested LEDs.

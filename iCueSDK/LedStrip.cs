@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 namespace iCueSDK
 {
-    public class Keyboard
-    {
+    public class LedStrip
+	{
 		public CorsairDeviceInfo DeviceInfo { get; set; }
 		private CorsairLedPositions LedPositions;
 		private List<CorsairLedColor> Colors;
@@ -15,7 +15,7 @@ namespace iCueSDK
 
 		public int CorsairDeviceIndex { get; set; }
 
-		public Keyboard()
+		public LedStrip()
 		{
 			this.Colors = new List<CorsairLedColor>();
 		}
@@ -29,7 +29,6 @@ namespace iCueSDK
 			// keyboard[CorsairKeyboardKeyId.B].Color = new CorsairColor(0, 255, 0);
 			this.sendToHardware();
 		}
-
 
 		public void sendToHardware()
 		{

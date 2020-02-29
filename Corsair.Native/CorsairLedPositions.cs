@@ -18,6 +18,11 @@ namespace Corsair.Native
         /// </summary>
         public int numberOfLed;
 
+        public int Length()
+        {
+            return numberOfLed;
+        }
+
         /// <summary>
         /// CUE-SDK: array of led positions
         /// </summary>
