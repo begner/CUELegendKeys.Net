@@ -47,7 +47,7 @@
                 <Button Content="Button1" Margin="0,10,0,0" VerticalAlignment="Top" Width="100"/>
             </WrapPanel>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <WrapPanel ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+                <WrapPanel x:Name="previewImages" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
                     <Image x:Name="previewImageSkillQ" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
                     <Image x:Name="previewImageSkillW" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
                     <Image x:Name="previewImageSkillE" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>

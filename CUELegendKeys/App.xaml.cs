@@ -37,7 +37,7 @@ namespace CUELegendKeys
         {
             _controller = CoreMessagingHelper.CreateDispatcherQueueControllerForCurrentThread();
         }
-
+        
         private DispatcherQueueController _controller;
 
 

@@ -72,6 +72,9 @@ namespace CUELegendKeys
             var processDetection = new ProcessDetection(processItems);
 
             ClientTypeGame gameClient = new ClientTypeGame();
+
+            gameClient.displayWindow = previewImages;
+                       /*
             gameClient.previewImageSkillQRenderTarget = previewImageSkillQ;
             gameClient.previewImageSkillWRenderTarget = previewImageSkillW;
             gameClient.previewImageSkillERenderTarget = previewImageSkillE;
@@ -86,8 +89,9 @@ namespace CUELegendKeys
             gameClient.previewImageItem5RenderTarget = previewImageItem5;
             gameClient.previewImageItem6RenderTarget = previewImageItem6;
             gameClient.previewImageItem7RenderTarget = previewImageItem7;
-
+            gameClient.previewImageBackRenderTarget = previewImageBack;
             gameClient.previewCharImageRenderTarget = previewCharImage;
+            */
 
             List<ClientMap> clientMapList = new List<ClientMap>(new ClientMap[] {
                    new ClientMap("gameClient", gameClient),

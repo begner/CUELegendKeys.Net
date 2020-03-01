@@ -75,6 +75,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Clients\Hotspots\HotspotItem.cs" />
+    <Compile Include="Clients\Hotspots\HotspotChar.cs" />
+    <Compile Include="Clients\Hotspots\HotspotSkill.cs" />
+    <Compile Include="Clients\Hotspots\Hotspot.cs" />
+    <Compile Include="UiHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
