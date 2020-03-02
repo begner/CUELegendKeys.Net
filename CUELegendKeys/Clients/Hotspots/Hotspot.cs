@@ -9,22 +9,48 @@ namespace CUELegendKeys
 {
     public abstract class Hotspot
     {
-        public int PosX { get; set; } = 0;
-        public int PosY { get; set; } = 0;
-        public int Width { get; set; } = 0;
-        public int Height { get; set; } = 0;
+        public Rect CaptureRect { get; set; } = new Rect(0, 0, 0, 0);
+        public void SetCaptureRect(System.Windows.Rect captureRect)
+        {
+            this.CaptureRect = new Rect(
+                (int)captureRect.X,
+                (int)captureRect.Y,
+                (int)captureRect.Width,
+                (int)captureRect.Height
+            ); ;
+        }
+
+        public Rect CastableDetectionArea { get; set; } = new Rect(0, 0, 0, 0);
+        public void SetCastableDetectionArea(System.Windows.Rect captureRect)
+        {
+            this.CastableDetectionArea = new Rect(
+                (int)captureRect.X,
+                (int)captureRect.Y,
+                (int)captureRect.Width,
+                (int)captureRect.Height
+            ); ;
+        }
         public string Name { get; set; } = "unnamed";
+
+        public string CastableDetectionColorString { get; set; } = "0,0,0";
+        public int BorderCut { get; set; } = 0;
         public List<string> LedIdNames { get; set; } = new List<string>();
         public WPFUIHotspotStates StatesUI { get; set; }
+        public Vec3b CastableDetectionColor { get; set; } = new Vec3b(0, 0, 0);
+        public void SetCastableDetectionColor(int[] color)
+        {
+            this.CastableDetectionColor = new Vec3b((byte)color[0], (byte)color[1], (byte)color[2]);
+        }
 
         public Mat CaptureSource { get; set; } = null;
         public Mat FilteredMat { get; set; } = null;
         public Mat ActionBase { get; set; } = null;
+        public Mat CasteableDetection { get; set; } = null;
 
         public BitmapSource CaptureSourceBS { get; set; } = null;
         public BitmapSource FilteredMatBS { get; set; } = null;
         public BitmapSource ActionBaseBS { get; set; } = null;
-
+        public BitmapSource CasteableDetectionBS { get; set; } = null;
 
         public abstract void CreateFilteredMat();
         public abstract void DoFrameAction();
@@ -35,12 +61,7 @@ namespace CUELegendKeys
         {
             
         }
-
-        public OpenCvSharp.Rect getRect()
-        {
-            return new OpenCvSharp.Rect(this.PosX, this.PosY, this.Width, this.Height);
-        }
-
+        
         public void DrawBitmapSource(BitmapSource BitmapSource, string uiElementName)
         {
             Image renderTarget = (Image)StatesUI.FindName(uiElementName);
@@ -59,6 +80,8 @@ namespace CUELegendKeys
             FilteredMatBS.Freeze();
             ActionBaseBS = ActionBase.ToBitmapSource();
             ActionBaseBS.Freeze();
+            CasteableDetectionBS = CasteableDetection.ToBitmapSource();
+            CasteableDetectionBS.Freeze();
         }
 
         public void DoFinish()
@@ -69,9 +92,13 @@ namespace CUELegendKeys
             TextBlock IsCastable = (TextBlock)StatesUI.FindName("IsCastable");
             IsCastable.Text = this.IsCastable() ? "YES" : "NO";
 
-            this.DrawBitmapSource(CaptureSourceBS, "Original");
-            // this.DrawBitmapSource(FilteredMatBS, "Cleaned");
+            TextBlock CastableDetectionColor = (TextBlock)StatesUI.FindName("CastableDetectionColor");
+            CastableDetectionColor.Text = this.CastableDetectionColorString;
+
+            this.DrawBitmapSource(CaptureSourceBS, "CaptureSource");
+            this.DrawBitmapSource(FilteredMatBS, "FilteredMat");
             this.DrawBitmapSource(ActionBaseBS, "ActionBase");
+            this.DrawBitmapSource(CasteableDetectionBS, "CasteableDetection");
         }
 
 

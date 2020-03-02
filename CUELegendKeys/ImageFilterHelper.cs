@@ -1,5 +1,6 @@
 ﻿using OpenCvSharp;
 
+
 namespace CUELegendKeys
 {
 	public static class ImageFilterHelper
@@ -25,6 +26,7 @@ namespace CUELegendKeys
 			Mat bg = new Mat(new Size(srcImage.Width, srcImage.Height), MatType.CV_8UC3, new Scalar(0, 0, 0));
 			Cv2.BitwiseAnd(bg, srcImage, srcImage, mask);
 		}
+
 		public static void saturation(ref Mat srcImage, int trashhold, double scale, double saturation)
 		{
 			srcImage = srcImage.CvtColor(ColorConversionCodes.RGB2HSV);
@@ -40,5 +42,26 @@ namespace CUELegendKeys
 			srcImage = srcImage.CvtColor(ColorConversionCodes.HSV2RGB);
 		}
 
+		public static void reduceColor(Mat mat, int div)
+		{
+			uint divHalf = (uint)System.Math.Floor((decimal)div / (decimal)2);
+			var mat3 = new Mat<Vec3b>(mat);
+			var indexer = mat3.GetIndexer();
+
+
+			for (int y = 0; y < mat.Height; y++)
+			{
+				for (int x = 0; x < mat.Width; x++)
+				{
+					Vec3b color = indexer[y, x];
+
+					color[0] = (byte)(color[0] / div * div + divHalf);
+					color[1] = (byte)(color[1] / div * div + divHalf);
+					color[2] = (byte)(color[2] / div * div + divHalf);
+					indexer[y, x] = color;
+				}
+			}
+
+		}
 	}
 }

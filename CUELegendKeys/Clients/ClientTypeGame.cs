@@ -48,10 +48,10 @@ namespace CUELegendKeys
                 if (Hotspot != null)
                 {
                     Hotspot.Name = SettingHotspot.Name;
-                    Hotspot.PosX = SettingHotspot.PosX;
-                    Hotspot.PosY = SettingHotspot.PosY;
-                    Hotspot.Width = SettingHotspot.Width;
-                    Hotspot.Height = SettingHotspot.Height;
+                    Hotspot.SetCaptureRect(SettingHotspot.CaptureRect);
+                    Hotspot.SetCastableDetectionArea(SettingHotspot.CastableDetectionArea);
+                    Hotspot.SetCastableDetectionColor(SettingHotspot.CastableDetectionColor);
+                    Hotspot.BorderCut = SettingHotspot.BorderCut;
                     Hotspot.LedIdNames = SettingHotspot.LedIdNames;
                     Hotspot.StatesUI = (WPFUIHotspotStates)displayWindow.FindName(SettingHotspot.WpfControlName);
                     Hotspot.Initialize();
@@ -65,7 +65,7 @@ namespace CUELegendKeys
         {
             foreach(Hotspot Hotspot in this.Hotspots)
             {
-                Mat HotspotMat = new Mat(this.CaptureResult, Hotspot.getRect());
+                Mat HotspotMat = new Mat(this.CaptureResult, Hotspot.CaptureRect);
                 Hotspot.CaptureSource = HotspotMat;
                 Hotspot.CreateFilteredMat();
 
