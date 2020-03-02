@@ -75,11 +75,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Clients\Hotspots\HotspotItem.cs" />
-    <Compile Include="Clients\Hotspots\HotspotChar.cs" />
+    <Compile Include="ImageFilterHelper.cs" />
     <Compile Include="Clients\Hotspots\HotspotSkill.cs" />
     <Compile Include="Clients\Hotspots\Hotspot.cs" />
     <Compile Include="UiHelper.cs" />
+    <Compile Include="WPFUIHotspotStates.xaml.cs">
+      <DependentUpon>WPFUIHotspotStates.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -98,6 +100,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WPFUIHotspotStates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -133,6 +139,10 @@
     <ProjectReference Include="..\Composition.WindowsRuntimeHelpers\Composition.WindowsRuntimeHelpers.csproj">
       <Project>{ec969287-3d35-410a-806c-0baaa7564911}</Project>
       <Name>Composition.WindowsRuntimeHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Corsair.Native\Corsair.Native.csproj">
+      <Project>{f1854938-b53b-4c43-90c8-3705231f711a}</Project>
+      <Name>Corsair.Native</Name>
     </ProjectReference>
     <ProjectReference Include="..\iCueSDK\iCueSDK.csproj">
       <Project>{ff3ce551-6459-49da-8dd5-8ecdbeecbe73}</Project>

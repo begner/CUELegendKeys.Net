@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Corsair.Native;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using OsHelper;
@@ -13,20 +15,18 @@ namespace CUELegendKeys
 {
     class ClientTypeGame: ClientType, IClientType
     {
-        public WrapPanel displayWindow { get; set; } = null;
-
         public System.Windows.Media.Imaging.BitmapSource GetRenderTargetBitmapSource()
         {
             return this.CaptureResult.ToBitmapSource();
         }
 
-        public List<IHotspot> Hotspots = new List<IHotspot>();
+        public List<Hotspot> Hotspots = new List<Hotspot>();
 
-        public ClientTypeGame()
+        public ClientTypeGame(FrameworkElement displayWindow)
         {
             foreach (SettingHotspot SettingHotspot in Settings.HotSpots)
             {
-                IHotspot Hotspot = null;
+                Hotspot Hotspot = null;
                 switch (SettingHotspot.Type)
                 {
                     case SettingsHotSpotType.Skill:
@@ -36,43 +36,53 @@ namespace CUELegendKeys
                         Hotspot = new HotspotSkill();
                         break;
                     case SettingsHotSpotType.Item:
-                        Hotspot = new HotspotItem();
+                        Hotspot = new HotspotSkill();
                         break;
                     case SettingsHotSpotType.Trinket:
-                        Hotspot = new HotspotItem();
+                        Hotspot = new HotspotSkill();
                         break;
                     case SettingsHotSpotType.Char:
-                        Hotspot = new HotspotChar();
+                        Hotspot = new HotspotSkill();
                         break;
                 }
                 if (Hotspot != null)
                 {
+                    Hotspot.Name = SettingHotspot.Name;
                     Hotspot.PosX = SettingHotspot.PosX;
                     Hotspot.PosY = SettingHotspot.PosY;
                     Hotspot.Width = SettingHotspot.Width;
                     Hotspot.Height = SettingHotspot.Height;
                     Hotspot.LedIdNames = SettingHotspot.LedIdNames;
-                    Hotspot.WpfControlName = SettingHotspot.WpfControlName;
-                    
+                    Hotspot.StatesUI = (WPFUIHotspotStates)displayWindow.FindName(SettingHotspot.WpfControlName);
+                    Hotspot.Initialize();
                     this.Hotspots.Add(Hotspot);
                 }
             }
         }
 
+
         public void DoFrameAction()
         {
-            foreach(IHotspot Hotspot in this.Hotspots)
+            foreach(Hotspot Hotspot in this.Hotspots)
             {
                 Mat HotspotMat = new Mat(this.CaptureResult, Hotspot.getRect());
                 Hotspot.CaptureSource = HotspotMat;
+                Hotspot.CreateFilteredMat();
 
+                Hotspot.DoBeforeFrameAction();
+                Hotspot.Tick();
                 Hotspot.DoFrameAction();
-
-                HotspotMat = HotspotMat.Resize(new Size(Hotspot.getRect().Width * 2, Hotspot.getRect().Height * 2), 0, 0, InterpolationFlags.Nearest);
-                Image renderTarget = (Image)displayWindow.FindName(Hotspot.WpfControlName);
-                renderTarget.Source = HotspotMat.ToBitmapSource();
+                Hotspot.DoAfterFrameAction();
+                
+                foreach(string LedIdName in Hotspot.LedIdNames)
+                {
+                    CorsairLedId ledId = (CorsairLedId)Enum.Parse(typeof(CorsairLedId), LedIdName);
+                    GetICueBridge().Keyboard.SetLedColor(ledId, Hotspot.getCurrentColor());
+                }
             }
-           
+            GetICueBridge().Keyboard.sendToHardware();
+            this.DrawFPS();
+
             /*
                 var ledResult = new LedResult();
                 var indexer = mat.GetGenericIndexer<OpenCvSharp.Vec3b>();
@@ -87,6 +97,14 @@ namespace CUELegendKeys
 
                 mat.Rectangle(new OpenCvSharp.Point(getX - 1, getY - 1), new OpenCvSharp.Point(getX + 5, getY + 1), new OpenCvSharp.Scalar(164, 196, 215, 255));
             */
+        }
+
+        public void DoFinish()
+        {
+            foreach (Hotspot Hotspot in this.Hotspots)
+            {
+                Hotspot.DoFinish();
+            }
         }
     }
 }

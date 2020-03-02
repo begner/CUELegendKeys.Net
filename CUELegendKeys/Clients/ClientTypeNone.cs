@@ -29,5 +29,9 @@ namespace CUELegendKeys
             return this.emptyMat.ToBitmapSource();
         }
 
+        public void DoFinish()
+        {
+        }
+
     }
 }

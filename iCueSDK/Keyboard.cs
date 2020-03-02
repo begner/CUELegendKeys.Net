@@ -20,6 +20,7 @@ namespace iCueSDK
 			this.Colors = new List<CorsairLedColor>();
 		}
 
+		/*
 		public void SetResult(LedResult result)
 		{
 			this.SetLedColor(CorsairLedId.Q, result.getSkill(0));
@@ -29,6 +30,7 @@ namespace iCueSDK
 			// keyboard[CorsairKeyboardKeyId.B].Color = new CorsairColor(0, 255, 0);
 			this.sendToHardware();
 		}
+		*/
 
 
 		public void sendToHardware()

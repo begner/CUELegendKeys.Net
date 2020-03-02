@@ -9,7 +9,7 @@ using iCueSDK;
 
 namespace CUELegendKeys
 {
-    public abstract class ClientType
+     public abstract class ClientType
     {
         public OpenCvSharp.Mat  CaptureResult { get; set; }
         public int              FPS { get; set; }
@@ -44,7 +44,7 @@ namespace CUELegendKeys
 
         System.Windows.Media.Imaging.BitmapSource GetRenderTargetBitmapSource();
         void DoFrameAction();
-
+        void DoFinish();
         
     }
 }

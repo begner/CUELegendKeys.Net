@@ -34,6 +34,9 @@ using Composition.WindowsRuntimeHelpers;
 using System.Linq;
 using System.Diagnostics;
 using CaptureCore;
+using System.Threading;
+using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace CUELegendKeys
 {
@@ -53,12 +56,13 @@ namespace CUELegendKeys
     {
         private ScreenCapture capture;
 
-        public System.Windows.Controls.Image previewCaptureImageRenderTarget { get; set; } = null;
-        
-        private readonly FPSCounter fpsCounter;
+        public System.Windows.FrameworkElement RootElement { get; set; } = null;
+
+        private readonly FPSCounter fpsCounter = new FPSCounter();
+        private readonly FPSCounter drawCounter = new FPSCounter();
         private readonly ProcessDetection processDetection;
         private readonly IEnumerable<ClientMap> ClientMapping;
-               
+        public Dispatcher Dispatcher { get; set;  }
 
         private ICueBridge ICueBridge;
         public void setiCueBridge(ref ICueBridge iCueBridge)
@@ -94,9 +98,9 @@ namespace CUELegendKeys
 
         public MainApplication(ProcessDetection processDetection, List<ClientMap> clientMapList)
         {
+            InitializeBackgroundWorker();
             this.processDetection = processDetection;
             this.ClientMapping = clientMapList.AsEnumerable();
-            this.fpsCounter = new FPSCounter();
 
             IEnumerable<MonitorInfo> monitors = MonitorEnumerationHelper.GetMonitors();
             IEnumerable<MonitorInfo> primMons = from primaryMonitor in monitors
@@ -122,8 +126,59 @@ namespace CUELegendKeys
             }
         }
 
+        // BackgroundWorker
+        private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
-        
+        private void InitializeBackgroundWorker()
+        {
+            backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorkerDoWork);
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorkerRunWorkerCompleted);
+        }
+
+
+        private void BackgroundWorkerDoWork(object sender, DoWorkEventArgs e)
+        {
+            IClientType client = (IClientType)e.Argument;
+            client.DoFrameAction();
+            e.Result = client;
+        }
+
+        private void BackgroundWorkerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled == true)
+            {
+                Debug.WriteLine("RunWorkerCompleted: {1}", "", "Canceled!");
+            }
+            else if (e.Error != null)
+            {
+                Debug.WriteLine("RunWorkerCompleted: {1}", "", "Error: " + e.Error.Message);
+            }
+            else
+            {
+                IClientType client = (IClientType)e.Result;
+                client.DoFinish();
+
+                System.Windows.Controls.Image previewCaptureImage = (System.Windows.Controls.Image)RootElement.FindName("previewCaptureImage");
+                System.Windows.Media.Imaging.BitmapSource bs = client.GetRenderTargetBitmapSource();
+                bs.Freeze();
+                previewCaptureImage.Source = bs;
+
+                System.Windows.Controls.TextBlock FPSText = (System.Windows.Controls.TextBlock)RootElement.FindName("FPS");
+                FPSText.Text = "FPS: " + client.FPS.ToString();
+
+                System.Windows.Controls.TextBlock DPSText = (System.Windows.Controls.TextBlock)RootElement.FindName("DPS");
+                DPSText.Text = "DPS: " + drawCounter.GetFPS().ToString();
+
+
+
+                GC.Collect();
+                drawCounter.IncreaseFrame();
+
+                
+
+            }
+        }
+
         public int GetLastFPS()
         {
             return fpsCounter.GetFPS();
@@ -158,7 +213,9 @@ namespace CUELegendKeys
                                 return;
                             }
 
+                            
                             // Cut out current Window
+                            string currentClientType = this.GetCurrentClientTyp();
                             Rect appRect = this.GetCurrentProcessWindowRect();
                             try
                             {
@@ -171,6 +228,7 @@ namespace CUELegendKeys
                                 // Debug.WriteLine("Mat: {1}/{2}", "", mat.Width, mat.Height);
                                 capturedImage = null;
                             }
+                            
 
                             // Detect Client Type
                             clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == this.GetCurrentClientTyp() select ClientMap).FirstOrDefault();
@@ -184,7 +242,12 @@ namespace CUELegendKeys
                                 client = new ClientTypeNone();
                             }
                             break;
-
+                        case SettingsAppRunMode.ForceGameCapture:
+                            Mat forceCapturedImage = capture.getLastFrameAsMat();
+                            clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == "gameClient" select ClientMap).FirstOrDefault();
+                            client = clientMap.Client;
+                            client.CaptureResult = forceCapturedImage;
+                            break;
                         case SettingsAppRunMode.MockLauncher:
                             clientMap = (from ClientMap in this.ClientMapping where ClientMap.ProcessType == "launcher" select ClientMap).FirstOrDefault();
                             client = clientMap.Client;
@@ -198,14 +261,16 @@ namespace CUELegendKeys
                             break;
                     }
 
+                    
+
                     // client.SetICueBridge(ref iCueBridge);
                     client.FPS = fpsCounter.GetFPS();
                     client.SetICueBridge(ref this.ICueBridge);
 
-                    client.DoFrameAction();
-                    previewCaptureImageRenderTarget.Source = client.GetRenderTargetBitmapSource();
-
-                    GC.Collect();
+                    if (backgroundWorker.IsBusy != true)
+                    {
+                        backgroundWorker.RunWorkerAsync(client);
+                    }
 
                     fpsCounter.IncreaseFrame();
                 }
@@ -220,36 +285,18 @@ namespace CUELegendKeys
 
         }
 
-        System.Windows.Threading.DispatcherTimer mockTimer = new System.Windows.Threading.DispatcherTimer();
+
         public void StartCaptureFromItem(GraphicsCaptureItem item)
         {
-            if (Settings.AppRunMode == SettingsAppRunMode.Normal)
-            {
-                this.StopCapture();
-                capture = new ScreenCapture(item);
-                capture.FrameReady += FrameReady;
-                capture.StartCapture();
-            }
-            else
-            {
-                // Hook up the Elapsed event for the timer. 
-                mockTimer.Tick += new EventHandler(FrameReady);
-                mockTimer.Interval = new TimeSpan(0, 0, 1);
-                mockTimer.Start();
-            }
+            this.StopCapture();
+            capture = new ScreenCapture(item);
+            capture.FrameReady += FrameReady;
+            capture.StartCapture();
         }
             
         public void StopCapture()
         {
-            if (Settings.AppRunMode == SettingsAppRunMode.Normal)
-            {
-                // capture.FrameReady -= FrameReady;
-                capture?.Dispose();
-            }
-            else
-            {
-                mockTimer.Stop();
-            }
+            capture?.Dispose();
         }
     }
 }

@@ -31,7 +31,7 @@
         mc:Ignorable="d"
         Title="CUELegendKeys" Height="474" Width="836"
         Loaded="Window_Loaded">
-    <Grid>
+    <Grid x:Name="RootElement">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             
@@ -43,28 +43,32 @@
 
         <DockPanel Grid.Row="0" Grid.Column="0" >
             <WrapPanel Height="170" VerticalAlignment="Top" Width="100">
+                <TextBlock x:Name="FPS" Text="FPS"  />
+                <TextBlock x:Name="DPS" Text="DPS"  />
+
                 <Button Content="Button1" Margin="0,10,0,0" VerticalAlignment="Top" Width="100"/>
                 <Button Content="Button1" Margin="0,10,0,0" VerticalAlignment="Top" Width="100"/>
             </WrapPanel>
+            
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <WrapPanel x:Name="previewImages" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
-                    <Image x:Name="previewImageSkillQ" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageSkillW" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageSkillE" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageSkillR" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageSkillD" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageSkillF" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageSkillQ"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageSkillW"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageSkillE"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageSkillR"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageSkillD"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageSkillF"/>
 
-                    <Image x:Name="previewImageItem1" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageItem2" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageItem3" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageItem4" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageItem5" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageItem6" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageItem7" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
-                    <Image x:Name="previewImageBack" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="150" Width="150"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem1"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem2"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem3"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem4"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem5"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem6"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageItem7"/>
+                    <local:WPFUIHotspotStates x:Name="previewImageBack"/>
 
-                    <Image x:Name="previewCharImage" Canvas.Left="10" Canvas.Top="10" Margin="10,10,0,0" Height="200" Width="200"/>
+                    <local:WPFUIHotspotStates x:Name="previewCharImage"/>
                 </WrapPanel>
             </ScrollViewer>
 

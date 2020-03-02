@@ -37,7 +37,7 @@ namespace OsHelper
         public Windows.Foundation.Rect GetWindowRect()
         {
             Windows.Foundation.Rect pRect = new Windows.Foundation.Rect();
-            if (this.activeProcessItem != null && this.activeProcessItem.Process != null)
+            if (this.activeProcessItem.Process.MainWindowHandle != null)
             {
                 pRect = WindowEnumerationHelper.GetWindowRectXY(this.activeProcessItem.Process.MainWindowHandle);
                 // Debug.WriteLine("process: {1}/{2} {3}x{4}", "", activeProcess.MainWindowHandle, activeProcess.MainWindowTitle, pRect.X, pRect.Y);
@@ -69,7 +69,7 @@ namespace OsHelper
             }
             else
             {
-                this.activeProcessItem = null;
+                // this.activeProcessItem = null;
             }
         }
 
@@ -82,12 +82,12 @@ namespace OsHelper
                 if (ps.Length > 0)
                 {
                     Process process = ps[0];
-                    if (WindowEnumerationHelper.IsWindowValidForCapture(process.MainWindowHandle))
-                    {
+                    // if (WindowEnumerationHelper.IsWindowValidForCapture(process.MainWindowHandle))
+                    // {
                         // Debug.WriteLine("process: {1}/{2}/{3}", "", pName, process.MainWindowHandle, process.MainWindowTitle);
                         pItem.Process = process;
                         return pItem;
-                    }
+                    // }
                 }
             }
             return null;

@@ -16,7 +16,7 @@ namespace iCueSDK
         {
             CUESDK.LoadCUESDK();
             CorsairProtocolDetails details = CUESDK.CorsairPerformProtocolHandshake();
-
+            CUESDK.CorsairRequestControl(CorsairAccessMode.ExclusiveLightingControl);
             int devCount = CUESDK.CorsairGetDeviceCount();
             Debug.WriteLine("CorsairGetDeviceCount: {1}", "", devCount);
 

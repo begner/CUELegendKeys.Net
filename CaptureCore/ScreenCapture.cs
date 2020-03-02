@@ -53,7 +53,7 @@ namespace CaptureCore
 
         public Mat getLastFrameAsMat()
         {
-            return lastMat;
+            return lastMat.CvtColor(ColorConversionCodes.RGBA2RGB);
         }
 
         public event EventHandler FrameReady;

@@ -56,6 +56,7 @@ namespace Corsair.Native
 
             _corsairSetLedsColorsBufferByDeviceIndexPointer = (CorsairSetLedsColorsBufferByDeviceIndexPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(_dllHandle, "CorsairSetLedsColorsBufferByDeviceIndex"), typeof(CorsairSetLedsColorsBufferByDeviceIndexPointer));
             _corsairSetLedsColorsFlushBufferPointer = (CorsairSetLedsColorsFlushBufferPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(_dllHandle, "CorsairSetLedsColorsFlushBuffer"), typeof(CorsairSetLedsColorsFlushBufferPointer));
+            _corsairSetLedsColorsFlushBufferPointer = (CorsairSetLedsColorsFlushBufferPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(_dllHandle, "CorsairSetLedsColorsFlushBuffer"), typeof(CorsairSetLedsColorsFlushBufferPointer));
             _corsairGetLedsColorsByDeviceIndexPointer = (CorsairGetLedsColorsByDeviceIndexPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(_dllHandle, "CorsairGetLedsColorsByDeviceIndex"), typeof(CorsairGetLedsColorsByDeviceIndexPointer));
             _corsairSetLayerPriorityPointer = (CorsairSetLayerPriorityPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(_dllHandle, "CorsairSetLayerPriority"), typeof(CorsairSetLayerPriorityPointer));
             _corsairGetDeviceCountPointer = (CorsairGetDeviceCountPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(_dllHandle, "CorsairGetDeviceCount"), typeof(CorsairGetDeviceCountPointer));

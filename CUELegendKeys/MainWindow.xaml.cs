@@ -63,17 +63,17 @@ namespace CUELegendKeys
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
-            // Process Watcher
-            List<ProcessItem> processItems = new List<ProcessItem>(new ProcessItem[] {
+
+
+          
+                // Process Watcher
+             List<ProcessItem> processItems = new List<ProcessItem>(new ProcessItem[] {
                 new ProcessItem("gameClient", "League of Legends"),
                 new ProcessItem("launcher", "LeagueClientUx")
             });
             var processDetection = new ProcessDetection(processItems);
 
-            ClientTypeGame gameClient = new ClientTypeGame();
-
-            gameClient.displayWindow = previewImages;
+            ClientTypeGame gameClient = new ClientTypeGame(previewImages);
                        /*
             gameClient.previewImageSkillQRenderTarget = previewImageSkillQ;
             gameClient.previewImageSkillWRenderTarget = previewImageSkillW;
@@ -100,7 +100,8 @@ namespace CUELegendKeys
 
             
             mainApplication = new MainApplication(processDetection, clientMapList);
-            mainApplication.previewCaptureImageRenderTarget = previewCaptureImage;
+            mainApplication.Dispatcher = Dispatcher;
+            mainApplication.RootElement = RootElement;
 
 
             // Cue Connection
@@ -108,6 +109,7 @@ namespace CUELegendKeys
             mainApplication.setiCueBridge(ref cb);
 
         }
+
     }
 }
 
