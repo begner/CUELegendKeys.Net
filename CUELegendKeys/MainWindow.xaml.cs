@@ -43,15 +43,15 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing;
-using OsHelper;
 using iCueSDK;
+using MahApps.Metro.Controls;
 
 namespace CUELegendKeys
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private MainApplication mainApplication;
 

@@ -36,10 +36,14 @@ namespace CUELegendKeys
         public int BorderCut { get; set; } = 0;
         public List<string> LedIdNames { get; set; } = new List<string>();
         public WPFUIHotspotStates StatesUI { get; set; }
-        public Vec3b CastableDetectionColor { get; set; } = new Vec3b(0, 0, 0);
-        public void SetCastableDetectionColor(int[] color)
+        public List<Vec3b> CastableDetectionColors { get; set; } = new List<Vec3b>();
+        public void SetCastableDetectionColors(List<System.Drawing.Color> colors)
         {
-            this.CastableDetectionColor = new Vec3b((byte)color[0], (byte)color[1], (byte)color[2]);
+            foreach(System.Drawing.Color color in colors)
+            {
+                this.CastableDetectionColors.Add(new Vec3b((byte)color.R, (byte)color.G, (byte)color.B));
+            }
+            
         }
 
         public Mat CaptureSource { get; set; } = null;

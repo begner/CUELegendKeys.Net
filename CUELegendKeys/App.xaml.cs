@@ -23,6 +23,8 @@
 //  ---------------------------------------------------------------------------------
 
 using Composition.WindowsRuntimeHelpers;
+using MahApps.Metro;
+using System;
 using System.Windows;
 using Windows.System;
 
@@ -37,7 +39,20 @@ namespace CUELegendKeys
         {
             _controller = CoreMessagingHelper.CreateDispatcherQueueControllerForCurrentThread();
         }
-        
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            // add custom accent and theme resource dictionaries to the ThemeManager
+            // you should replace MahAppsMetroThemesSample with your application name
+            // and correct place where your custom accent lives
+            ThemeManager.AddTheme(new Uri("pack://application:,,,/AppTheme.xaml"));
+            ThemeManager.ChangeTheme(this, "CUELegendKeys");
+
+            base.OnStartup(e);
+
+
+        }
+
         private DispatcherQueueController _controller;
 
 

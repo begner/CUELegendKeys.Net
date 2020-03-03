@@ -50,7 +50,7 @@ namespace CUELegendKeys
                     Hotspot.Name = SettingHotspot.Name;
                     Hotspot.SetCaptureRect(SettingHotspot.CaptureRect);
                     Hotspot.SetCastableDetectionArea(SettingHotspot.CastableDetectionArea);
-                    Hotspot.SetCastableDetectionColor(SettingHotspot.CastableDetectionColor);
+                    Hotspot.SetCastableDetectionColors(SettingHotspot.CastableDetectionColors);
                     Hotspot.BorderCut = SettingHotspot.BorderCut;
                     Hotspot.LedIdNames = SettingHotspot.LedIdNames;
                     Hotspot.StatesUI = (WPFUIHotspotStates)displayWindow.FindName(SettingHotspot.WpfControlName);

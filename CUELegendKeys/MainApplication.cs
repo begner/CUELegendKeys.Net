@@ -160,7 +160,7 @@ namespace CUELegendKeys
 
                 System.Windows.Controls.Image previewCaptureImage = (System.Windows.Controls.Image)RootElement.FindName("previewCaptureImage");
                 System.Windows.Media.Imaging.BitmapSource bs = client.GetRenderTargetBitmapSource();
-                bs.Freeze();
+                // bs.Freeze();
                 previewCaptureImage.Source = bs;
 
                 System.Windows.Controls.TextBlock FPSText = (System.Windows.Controls.TextBlock)RootElement.FindName("FPS");

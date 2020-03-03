@@ -17,18 +17,28 @@ namespace CUELegendKeys
 
         public override void CreateFilteredMat()
         {
-            Mat image = new Mat(this.CaptureSource, new Rect(this.BorderCut, this.BorderCut, this.CaptureSource.Width - this.BorderCut * 2, this.CaptureSource.Height - this.BorderCut * 2));
-            image = image.Blur(new Size(5, 5), new Point(-1, -1));
-            ImageFilterHelper.killDarkPixel(ref image, 60);
-            // ImageFilterHelper.KillGrayPixel(ref image, 60);
-            ImageFilterHelper.saturation(ref image, 0, 2, 50);
-            FilteredMat = image;
-
             CasteableDetection = new Mat(this.CaptureSource, this.CastableDetectionArea);
             CasteableDetection = CasteableDetection.Resize(new Size(1, 1), 0, 0, InterpolationFlags.Cubic);
             ImageFilterHelper.reduceColor(CasteableDetection, 64);
+
+
             Vec3b color = CasteableDetection.At<Vec3b>(0, 0);
             CastableDetectionColorString = color[0].ToString() + ", " + color[1].ToString() + ", " + color[2].ToString();
+
+            FilteredMat = CaptureSource;
+            if (this.IsCastable())
+            {
+                Mat image = new Mat(this.CaptureSource, new Rect(this.BorderCut, this.BorderCut, this.CaptureSource.Width - this.BorderCut * 2, this.CaptureSource.Height - this.BorderCut * 2));
+                image = image.Blur(new Size(5, 5), new Point(-1, -1));
+                ImageFilterHelper.killDarkPixel(ref image, 60);
+                // ImageFilterHelper.KillGrayPixel(ref image, 60);
+                ImageFilterHelper.saturation(ref image, 0, 2, 50);
+                FilteredMat = image;
+
+            }
+
+
+            
 
         }
 
@@ -101,10 +111,15 @@ namespace CUELegendKeys
 
         public override bool IsCastable()
         {
-            Vec3b color = CasteableDetection.At<Vec3b>(0, 0);
-            return (color[0] == CastableDetectionColor[0] &&
-                color[1] == CastableDetectionColor[1] &&
-                color[2] == CastableDetectionColor[2]);
+            Vec3b currentColor = CasteableDetection.At<Vec3b>(0, 0);
+            foreach(Vec3b testColor in CastableDetectionColors)
+            {
+                if (currentColor[0] == testColor[0] &&
+                    currentColor[1] == testColor[1] &&
+                    currentColor[2] == testColor[2]) return true;
+            }
+
+            return false;
         }
 
     }
