@@ -55,9 +55,13 @@ namespace CUELegendKeys
     {
         private MainApplication mainApplication;
 
+        public Settings AppSettings { get; set; } = new Settings();
+
         public MainWindow()
         {
             InitializeComponent();
+            
+
             this.Left = 2000;
         }
 
@@ -73,25 +77,8 @@ namespace CUELegendKeys
             });
             var processDetection = new ProcessDetection(processItems);
 
-            ClientTypeGame gameClient = new ClientTypeGame(previewImages);
-                       /*
-            gameClient.previewImageSkillQRenderTarget = previewImageSkillQ;
-            gameClient.previewImageSkillWRenderTarget = previewImageSkillW;
-            gameClient.previewImageSkillERenderTarget = previewImageSkillE;
-            gameClient.previewImageSkillRRenderTarget = previewImageSkillR;
-            gameClient.previewImageSkillDRenderTarget = previewImageSkillD;
-            gameClient.previewImageSkillFRenderTarget = previewImageSkillF;
-
-            gameClient.previewImageItem1RenderTarget = previewImageItem1;
-            gameClient.previewImageItem2RenderTarget = previewImageItem2;
-            gameClient.previewImageItem3RenderTarget = previewImageItem3;
-            gameClient.previewImageItem4RenderTarget = previewImageItem4;
-            gameClient.previewImageItem5RenderTarget = previewImageItem5;
-            gameClient.previewImageItem6RenderTarget = previewImageItem6;
-            gameClient.previewImageItem7RenderTarget = previewImageItem7;
-            gameClient.previewImageBackRenderTarget = previewImageBack;
-            gameClient.previewCharImageRenderTarget = previewCharImage;
-            */
+            ClientTypeGame gameClient = new ClientTypeGame(previewImages, AppSettings);
+                      
 
             List<ClientMap> clientMapList = new List<ClientMap>(new ClientMap[] {
                    new ClientMap("gameClient", gameClient),
@@ -99,7 +86,7 @@ namespace CUELegendKeys
             });
 
             
-            mainApplication = new MainApplication(processDetection, clientMapList);
+            mainApplication = new MainApplication(processDetection, clientMapList, AppSettings);
             mainApplication.Dispatcher = Dispatcher;
             mainApplication.RootElement = RootElement;
 

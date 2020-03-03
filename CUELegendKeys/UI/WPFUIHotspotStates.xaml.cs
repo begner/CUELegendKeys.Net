@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +21,21 @@ namespace CUELegendKeys
     /// </summary>
     public partial class WPFUIHotspotStates : UserControl
     {
+        public SettingHotspot SettingHotspot { get; set; }
+
         public WPFUIHotspotStates()
         {
             InitializeComponent();
             this.DataContext = this;
         }
 
+        void SettingsClick(Object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("SettingsClick: {1}", "", SettingHotspot.Name);
+            HotspotSettingsWindow HotspotSettingsWindow = new HotspotSettingsWindow(SettingHotspot);
+            HotspotSettingsWindow.Show();
+
+        }
 
     }
 }

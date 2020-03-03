@@ -43,9 +43,9 @@ namespace CUELegendKeys
     public class ClientMap
     {
         public string ProcessType { get; private set; } = "";
-        public IClientType Client { get; private set; }
+        public ClientType Client { get; private set; }
 
-        public ClientMap(string processType, IClientType client)
+        public ClientMap(string processType, ClientType client)
         {
             this.ProcessType = processType;
             this.Client = client;
@@ -54,6 +54,7 @@ namespace CUELegendKeys
 
     public class MainApplication : IDisposable
     {
+        
         private ScreenCapture capture;
 
         public System.Windows.FrameworkElement RootElement { get; set; } = null;
@@ -62,7 +63,8 @@ namespace CUELegendKeys
         private readonly FPSCounter drawCounter = new FPSCounter();
         private readonly ProcessDetection processDetection;
         private readonly IEnumerable<ClientMap> ClientMapping;
-        public Dispatcher Dispatcher { get; set;  }
+        public Dispatcher Dispatcher { get; set; }
+        public Settings AppSettings { get; set; }
 
         private ICueBridge ICueBridge;
         public void setiCueBridge(ref ICueBridge iCueBridge)
@@ -96,8 +98,9 @@ namespace CUELegendKeys
 
         private Mat mockImage = null;
 
-        public MainApplication(ProcessDetection processDetection, List<ClientMap> clientMapList)
+        public MainApplication(ProcessDetection processDetection, List<ClientMap> clientMapList, Settings appSettings)
         {
+            this.AppSettings = appSettings;
             InitializeBackgroundWorker();
             this.processDetection = processDetection;
             this.ClientMapping = clientMapList.AsEnumerable();
@@ -138,7 +141,7 @@ namespace CUELegendKeys
 
         private void BackgroundWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-            IClientType client = (IClientType)e.Argument;
+            ClientType client = (ClientType)e.Argument;
             client.DoFrameAction();
             e.Result = client;
         }
@@ -155,7 +158,7 @@ namespace CUELegendKeys
             }
             else
             {
-                IClientType client = (IClientType)e.Result;
+                ClientType client = (ClientType)e.Result;
                 client.DoFinish();
 
                 System.Windows.Controls.Image previewCaptureImage = (System.Windows.Controls.Image)RootElement.FindName("previewCaptureImage");
@@ -163,11 +166,11 @@ namespace CUELegendKeys
                 // bs.Freeze();
                 previewCaptureImage.Source = bs;
 
-                System.Windows.Controls.TextBlock FPSText = (System.Windows.Controls.TextBlock)RootElement.FindName("FPS");
-                FPSText.Text = "FPS: " + client.FPS.ToString();
+                System.Windows.Controls.TextBlock CapturePerSecond = (System.Windows.Controls.TextBlock)RootElement.FindName("CapturePerSecond");
+                CapturePerSecond.Text = "FPS: " + client.FPS.ToString();
 
-                System.Windows.Controls.TextBlock DPSText = (System.Windows.Controls.TextBlock)RootElement.FindName("DPS");
-                DPSText.Text = "DPS: " + drawCounter.GetFPS().ToString();
+                System.Windows.Controls.TextBlock UIRedrawsPerSecond = (System.Windows.Controls.TextBlock)RootElement.FindName("UIRedrawsPerSecond");
+                UIRedrawsPerSecond.Text = "DPS: " + drawCounter.GetFPS().ToString();
 
 
 
@@ -197,7 +200,7 @@ namespace CUELegendKeys
                 {
                     frameAnalysisInProgress = true;
 
-                    IClientType client = null;
+                    ClientType client = null;
                     ClientMap clientMap = null;
 
                     // Capture Screen 

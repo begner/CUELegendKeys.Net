@@ -13,18 +13,17 @@ using OsHelper;
 
 namespace CUELegendKeys
 {
-    class ClientTypeGame: ClientType, IClientType
+    class ClientTypeGame: ClientType
     {
-        public System.Windows.Media.Imaging.BitmapSource GetRenderTargetBitmapSource()
-        {
-            return this.CaptureResult.ToBitmapSource();
-        }
-
         public List<Hotspot> Hotspots = new List<Hotspot>();
+        
+        private Settings AppSettings;
 
-        public ClientTypeGame(FrameworkElement displayWindow)
+        public ClientTypeGame(Panel displayWindow, Settings AppSettings)
         {
-            foreach (SettingHotspot SettingHotspot in Settings.HotSpots)
+            this.AppSettings = AppSettings;
+
+            foreach (SettingHotspot SettingHotspot in AppSettings.HotSpots)
             {
                 Hotspot Hotspot = null;
                 switch (SettingHotspot.Type)
@@ -38,33 +37,49 @@ namespace CUELegendKeys
                     case SettingsHotSpotType.Item:
                         Hotspot = new HotspotSkill();
                         break;
+                    case SettingsHotSpotType.ResourceBar:
+                        Hotspot = new HotspotResourceBar();
+                        break;
                     case SettingsHotSpotType.Trinket:
+                        Hotspot = new HotspotSkill();
+                        break;
+                    case SettingsHotSpotType.Back:
                         Hotspot = new HotspotSkill();
                         break;
                     case SettingsHotSpotType.Char:
                         Hotspot = new HotspotSkill();
                         break;
+
                 }
                 if (Hotspot != null)
                 {
                     Hotspot.Name = SettingHotspot.Name;
-                    Hotspot.SetCaptureRect(SettingHotspot.CaptureRect);
-                    Hotspot.SetCastableDetectionArea(SettingHotspot.CastableDetectionArea);
-                    Hotspot.SetCastableDetectionColors(SettingHotspot.CastableDetectionColors);
-                    Hotspot.BorderCut = SettingHotspot.BorderCut;
                     Hotspot.LedIdNames = SettingHotspot.LedIdNames;
-                    Hotspot.StatesUI = (WPFUIHotspotStates)displayWindow.FindName(SettingHotspot.WpfControlName);
+                    Hotspot.StatesUI = new WPFUIHotspotStates();
+                    if (SettingHotspot.ImagePartsOrientation == "V")
+                    {
+                        ((StackPanel)Hotspot.StatesUI.FindName("ImageParts")).Orientation = Orientation.Vertical;
+                    }
+                    
+                    
+
+                    displayWindow.Children.Add(Hotspot.StatesUI);
                     Hotspot.Initialize();
+                    Hotspot.SettingHotspot = SettingHotspot;
                     this.Hotspots.Add(Hotspot);
                 }
             }
         }
-
-
-        public void DoFrameAction()
+        
+        public override void DoFrameAction()
         {
             foreach(Hotspot Hotspot in this.Hotspots)
             {
+                Hotspot.SetCaptureRect(Hotspot.SettingHotspot.CaptureRect);
+                Hotspot.SetCastableDetectionArea(Hotspot.SettingHotspot.CastableDetectionArea);
+                Hotspot.SetCastableDetectionColors(Hotspot.SettingHotspot.CastableDetectionColors);
+                Hotspot.BorderCut = Hotspot.SettingHotspot.BorderCut;
+
                 Mat HotspotMat = new Mat(this.CaptureResult, Hotspot.CaptureRect);
                 Hotspot.CaptureSource = HotspotMat;
                 Hotspot.CreateFilteredMat();
@@ -77,7 +92,14 @@ namespace CUELegendKeys
                 foreach(string LedIdName in Hotspot.LedIdNames)
                 {
                     CorsairLedId ledId = (CorsairLedId)Enum.Parse(typeof(CorsairLedId), LedIdName);
-                    GetICueBridge().Keyboard.SetLedColor(ledId, Hotspot.getCurrentColor());
+
+                    List<LedResults.Color> colors = Hotspot.getCurrentColors();
+                    if (colors.Count == 1)
+                    {
+                        GetICueBridge().Keyboard.SetLedColor(ledId, colors.ElementAt(0));
+                    }
+
+                    
                 }
             }
             GetICueBridge().Keyboard.sendToHardware();
@@ -99,7 +121,7 @@ namespace CUELegendKeys
             */
         }
 
-        public void DoFinish()
+        public override void DoFinish()
         {
             foreach (Hotspot Hotspot in this.Hotspots)
             {

@@ -1,5 +1,6 @@
 ﻿using OpenCvSharp;
 using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace CUELegendKeys
@@ -15,18 +16,20 @@ namespace CUELegendKeys
             Cv2.Rectangle(ActionBase, new Rect(CurrentColorCoord.X-1, CurrentColorCoord.Y-1, 3, 3), new Scalar(0, 255, 0), 1);
         }
 
+
         public override void CreateFilteredMat()
         {
-            CasteableDetection = new Mat(this.CaptureSource, this.CastableDetectionArea);
-            CasteableDetection = CasteableDetection.Resize(new Size(1, 1), 0, 0, InterpolationFlags.Cubic);
-            ImageFilterHelper.reduceColor(CasteableDetection, 64);
-
-
-            Vec3b color = CasteableDetection.At<Vec3b>(0, 0);
-            CastableDetectionColorString = color[0].ToString() + ", " + color[1].ToString() + ", " + color[2].ToString();
+            if (UseCastableDetection())
+            {
+                CasteableDetection = new Mat(this.CaptureSource, this.CastableDetectionArea);
+                CasteableDetection = CasteableDetection.Resize(new Size(1, 1), 0, 0, InterpolationFlags.Cubic);
+                ImageFilterHelper.reduceColor(CasteableDetection, 64);
+                Vec3b color = CasteableDetection.At<Vec3b>(0, 0);
+                CastableDetectionColorString = color[0].ToString() + ", " + color[1].ToString() + ", " + color[2].ToString();
+            }
 
             FilteredMat = CaptureSource;
-            if (this.IsCastable())
+            if (this.IsCastable() || !UseCastableDetection())
             {
                 Mat image = new Mat(this.CaptureSource, new Rect(this.BorderCut, this.BorderCut, this.CaptureSource.Width - this.BorderCut * 2, this.CaptureSource.Height - this.BorderCut * 2));
                 image = image.Blur(new Size(5, 5), new Point(-1, -1));
@@ -34,15 +37,10 @@ namespace CUELegendKeys
                 // ImageFilterHelper.KillGrayPixel(ref image, 60);
                 ImageFilterHelper.saturation(ref image, 0, 2, 50);
                 FilteredMat = image;
-
             }
-
-
-            
-
         }
 
-        public override LedResults.Color getCurrentColor()
+        public override List<LedResults.Color> getCurrentColors()
         {
             int brightnessTreshold = 50;
             int r = 0;
@@ -74,7 +72,7 @@ namespace CUELegendKeys
                 }
 
             }
-            return new LedResults.Color(r, g, b);
+            return new List<LedResults.Color>() { new LedResults.Color(r, g, b) };
         }
 
         public Point getCoordsByTick(int offset)
@@ -111,6 +109,11 @@ namespace CUELegendKeys
 
         public override bool IsCastable()
         {
+            if (!UseCastableDetection())
+            {
+                return false;
+            }
+
             Vec3b currentColor = CasteableDetection.At<Vec3b>(0, 0);
             foreach(Vec3b testColor in CastableDetectionColors)
             {

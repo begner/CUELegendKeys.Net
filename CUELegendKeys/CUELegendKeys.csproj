@@ -57,6 +57,9 @@
   <PropertyGroup>
     <StartupObject>CUELegendKeys.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\keyboard.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -74,22 +77,33 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="UI\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Clients\Hotspots\HotspotResourceBar.cs" />
+    <Compile Include="UI\HotspotSettingsWindow.xaml.cs">
+      <DependentUpon>HotspotSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImageFilterHelper.cs" />
     <Compile Include="Clients\Hotspots\HotspotSkill.cs" />
     <Compile Include="Clients\Hotspots\Hotspot.cs" />
     <Compile Include="UiHelper.cs" />
-    <Compile Include="WPFUIHotspotStates.xaml.cs">
+    <Compile Include="UI\HotspotSettingInput.xaml.cs">
+      <DependentUpon>HotspotSettingInput.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WPFUIHotspotStates.xaml.cs">
       <DependentUpon>WPFUIHotspotStates.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Page Include="UI\HotspotSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -99,11 +113,15 @@
     <Compile Include="Clients\ClientTypeLauncher.cs" />
     <Compile Include="Clients\ClientType.cs" />
     <Compile Include="MainApplication.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WPFUIHotspotStates.xaml">
+    <Page Include="UI\HotspotSettingInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WPFUIHotspotStates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -125,6 +143,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -132,7 +151,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="UI\App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CaptureCore\CaptureCore.csproj">
@@ -161,6 +180,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit">
+      <Version>3.8.1</Version>
+    </PackageReference>
     <PackageReference Include="MahApps.Metro">
       <Version>2.0.0-alpha0660</Version>
     </PackageReference>
@@ -187,10 +209,13 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AppTheme.xaml">
+    <Page Include="UI\AppTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\keyboard.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

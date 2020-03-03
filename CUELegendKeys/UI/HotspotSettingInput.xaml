@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="CUELegendKeys.UI.HotspotSettingInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CUELegendKeys.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="400">
+    <Grid HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Margin="0, 0, 0, 10">
+            <TextBlock x:Name="Label" Width="200" />
+            <TextBox Width="100" Text="{Binding IntValue}" TextAlignment="Right" />
+        </StackPanel> 
+    </Grid>
+</UserControl>

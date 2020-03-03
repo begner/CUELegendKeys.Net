@@ -17,7 +17,7 @@ namespace CUELegendKeys
                 (int)captureRect.Y,
                 (int)captureRect.Width,
                 (int)captureRect.Height
-            ); ;
+            );
         }
 
         public Rect CastableDetectionArea { get; set; } = new Rect(0, 0, 0, 0);
@@ -28,7 +28,7 @@ namespace CUELegendKeys
                 (int)captureRect.Y,
                 (int)captureRect.Width,
                 (int)captureRect.Height
-            ); ;
+            );
         }
         public string Name { get; set; } = "unnamed";
 
@@ -59,16 +59,24 @@ namespace CUELegendKeys
         public abstract void CreateFilteredMat();
         public abstract void DoFrameAction();
 
-        public abstract LedResults.Color getCurrentColor();
+        public SettingHotspot SettingHotspot { get; set; } = null;
+        public abstract List<LedResults.Color> getCurrentColors();
 
         public void Initialize()
         {
             
         }
-        
+
+        public bool UseCastableDetection()
+        {
+            return (this.CastableDetectionArea.Width > 0 && this.CastableDetectionArea.Height > 0);
+        }
+
         public void DrawBitmapSource(BitmapSource BitmapSource, string uiElementName)
         {
             Image renderTarget = (Image)StatesUI.FindName(uiElementName);
+            renderTarget.Width = this.SettingHotspot.PreviewImageWidth;
+            renderTarget.Height = this.SettingHotspot.PreviewImageHeight;
             renderTarget.Dispatcher.Invoke((Action)(() => renderTarget.Source = BitmapSource));
         }
 
@@ -78,14 +86,28 @@ namespace CUELegendKeys
         }
         public void DoAfterFrameAction()
         {
-            CaptureSourceBS = CaptureSource.ToBitmapSource();
-            CaptureSourceBS.Freeze();
-            FilteredMatBS = FilteredMat.ToBitmapSource();
-            FilteredMatBS.Freeze();
-            ActionBaseBS = ActionBase.ToBitmapSource();
-            ActionBaseBS.Freeze();
-            CasteableDetectionBS = CasteableDetection.ToBitmapSource();
-            CasteableDetectionBS.Freeze();
+            if (CaptureSource != null)
+            {
+                CaptureSourceBS = CaptureSource.ToBitmapSource();
+                CaptureSourceBS.Freeze();
+            }
+            if (FilteredMat != null)
+            {
+                FilteredMatBS = FilteredMat.ToBitmapSource();
+                FilteredMatBS.Freeze();
+            }
+            if (ActionBase != null)
+            {
+                ActionBaseBS = ActionBase.ToBitmapSource();
+                ActionBaseBS.Freeze();
+            }
+            
+            if (this.UseCastableDetection())
+            {
+                CasteableDetectionBS = CasteableDetection.ToBitmapSource();
+                CasteableDetectionBS.Freeze();
+            }
+            
         }
 
         public void DoFinish()
@@ -96,16 +118,27 @@ namespace CUELegendKeys
             TextBlock IsCastable = (TextBlock)StatesUI.FindName("IsCastable");
             IsCastable.Text = this.IsCastable() ? "YES" : "NO";
 
-            TextBlock CastableDetectionColor = (TextBlock)StatesUI.FindName("CastableDetectionColor");
-            CastableDetectionColor.Text = this.CastableDetectionColorString;
+            // For WPF Control -> Edit button
+            StatesUI.SettingHotspot = this.SettingHotspot;
+            if (CaptureSource != null) { 
+                this.DrawBitmapSource(CaptureSourceBS, "CaptureSource");
+            }
+            if (FilteredMat != null)
+            {
+                this.DrawBitmapSource(FilteredMatBS, "FilteredMat");
+            }
+            if (ActionBase != null)
+            {
+                this.DrawBitmapSource(ActionBaseBS, "ActionBase");
+            }
+            if (this.UseCastableDetection())
+            {
+                this.DrawBitmapSource(CasteableDetectionBS, "CasteableDetection");
 
-            this.DrawBitmapSource(CaptureSourceBS, "CaptureSource");
-            this.DrawBitmapSource(FilteredMatBS, "FilteredMat");
-            this.DrawBitmapSource(ActionBaseBS, "ActionBase");
-            this.DrawBitmapSource(CasteableDetectionBS, "CasteableDetection");
+                TextBlock CastableDetectionColor = (TextBlock)StatesUI.FindName("CastableDetectionColor");
+                CastableDetectionColor.Text = this.CastableDetectionColorString;
+            }
         }
-
-
 
         public virtual bool IsCastable()
         {

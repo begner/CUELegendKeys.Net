@@ -5,14 +5,11 @@ using iCueSDK;
 
 namespace CUELegendKeys
 {
-    class ClientTypeLauncher : ClientType, IClientType
+    class ClientTypeLauncher : ClientType
     {
-        public System.Windows.Media.Imaging.BitmapSource GetRenderTargetBitmapSource()
-        {
-            return this.CaptureResult.ToBitmapSource();
-        }
+        
 
-        public void DoFrameAction()
+        public override  void DoFrameAction()
         {
             /*
             var ledResult = new LedResult();
@@ -38,9 +35,5 @@ namespace CUELegendKeys
         }
 
 
-        public void DoFinish()
-        {
-          
-        }
     }
 }

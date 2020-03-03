@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="CUELegendKeys.WPFUIHotspotStates"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:local="clr-namespace:CUELegendKeys"
+
+             mc:Ignorable="d" 
+             d:DesignWidth="640"
+             d:DesignHeight="150">
+    <StackPanel HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Top">
+        <TextBlock x:Name="HotspotName" Text="HotspotName" FontSize="16"  FontWeight="Bold" Margin="0,0,0,5" >
+            <TextBlock.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="35" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="#FFefe4cf" Offset="0"/>
+                    <GradientStop Color="#FFc89c3e" Offset="1"/>
+                    
+                </LinearGradientBrush>
+            </TextBlock.Foreground>
+        </TextBlock>
+
+        <Border CornerRadius="10" BorderThickness="2">
+            <Border.BorderBrush>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FFcbbc8f" Offset="0"/>
+                    <GradientStop Color="#FF846837" Offset="1"/>
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="35" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#22FFFFFF" Offset="0"/>
+                    <GradientStop Color="#00FFFFFF" Offset="1"/>
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="35" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                </LinearGradientBrush>
+            </Border.Background>
+
+
+            <StackPanel HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Top" Orientation="Horizontal">
+                <StackPanel x:Name="ImageParts" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                    <Border BorderThickness="1" BorderBrush="#FFc89c3e" Margin="0,0,10,0" >
+                        <Image x:Name="CaptureSource" Height="50" Width="50" Stretch="Uniform"/>
+                    </Border>
+                    <Border BorderThickness="1" BorderBrush="#FFc89c3e" Margin="0,0,10,0" >
+                        <Image x:Name="FilteredMat" Height="50" Width="50" Stretch="Uniform"/>
+                    </Border>
+                    <Border BorderThickness="1" BorderBrush="#FFc89c3e" Margin="0,0,10,0" >
+                        <Image x:Name="ActionBase" Height="50" Width="50"  Stretch="Uniform"/>
+                    </Border>
+                    <Border BorderThickness="1" BorderBrush="#FFc89c3e" Margin="0,0,0,0" >
+                        <Image x:Name="CasteableDetection" Height="50" Width="50"  Stretch="Uniform"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="100">
+                    <TextBlock x:Name="IsCastable" Text="NO" Margin="0,5,0,0"/>
+                    <TextBlock x:Name="CastableDetectionColor" Text="" Margin="0,5,0,0"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <Button Click="SettingsClick" Style="{DynamicResource MahApps.Styles.Button.Circle}" Width="40" Height="40">
+                        <iconPacks:PackIconModern Kind="Settings" Width="25" Height="25"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+     
+            
+        </Border>
+        
+    </StackPanel>
+
+</UserControl>

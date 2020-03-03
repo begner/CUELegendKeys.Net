@@ -16,9 +16,22 @@ namespace CUELegendKeys
 
         private ICueBridge iCueBridge;
 
+        public Settings AppSettings { get; set; }
+
         public ref ICueBridge GetICueBridge()
         {
             return ref this.iCueBridge;
+        }
+
+        public abstract void DoFrameAction();
+        public virtual void DoFinish()
+        {
+
+        }
+
+        public virtual System.Windows.Media.Imaging.BitmapSource GetRenderTargetBitmapSource()
+        {
+            return this.CaptureResult.ToBitmapSource();
         }
 
         public void SetICueBridge(ref ICueBridge value)
@@ -33,18 +46,5 @@ namespace CUELegendKeys
         }
     }
 
-    public interface IClientType
-    {
-        OpenCvSharp.Mat CaptureResult { get; set; }
-        int FPS { get; set; }
-
-        ref ICueBridge GetICueBridge();
-        void SetICueBridge(ref ICueBridge value);
-        
-
-        System.Windows.Media.Imaging.BitmapSource GetRenderTargetBitmapSource();
-        void DoFrameAction();
-        void DoFinish();
-        
-    }
+    
 }

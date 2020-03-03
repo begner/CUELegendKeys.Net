@@ -45,7 +45,7 @@ namespace CUELegendKeys
             // add custom accent and theme resource dictionaries to the ThemeManager
             // you should replace MahAppsMetroThemesSample with your application name
             // and correct place where your custom accent lives
-            ThemeManager.AddTheme(new Uri("pack://application:,,,/AppTheme.xaml"));
+            ThemeManager.AddTheme(new Uri("pack://application:,,,/UI/AppTheme.xaml"));
             ThemeManager.ChangeTheme(this, "CUELegendKeys");
 
             base.OnStartup(e);
