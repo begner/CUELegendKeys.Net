@@ -41,7 +41,6 @@
         GlowBrush="#FF000000"
     
         WindowTransitionsEnabled="False"
-        WindowStartupLocation="CenterScreen"
 >
     
     

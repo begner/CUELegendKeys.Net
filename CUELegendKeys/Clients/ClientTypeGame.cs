@@ -88,20 +88,22 @@ namespace CUELegendKeys
                 Hotspot.Tick();
                 Hotspot.DoFrameAction();
                 Hotspot.DoAfterFrameAction();
-                
-                foreach(string LedIdName in Hotspot.LedIdNames)
+
+
+                List<LedResults.Color> colors = Hotspot.getCurrentColors();
+                int colorIndex = 0;
+                foreach (string LedIdName in Hotspot.LedIdNames)
                 {
                     CorsairLedId ledId = (CorsairLedId)Enum.Parse(typeof(CorsairLedId), LedIdName);
 
-                    List<LedResults.Color> colors = Hotspot.getCurrentColors();
-                    if (colors.Count == 1)
-                    {
-                        GetICueBridge().Keyboard.SetLedColor(ledId, colors.ElementAt(0));
-                    }
-
+                    int curColorIndex = colorIndex % Hotspot.LedIdNames.Count;
+                    LedResults.Color CurColor = colors.ElementAt(curColorIndex);
+                    GetICueBridge().Keyboard.SetLedColor(ledId, CurColor);
                     
+                    colorIndex++;
                 }
             }
+
             GetICueBridge().Keyboard.sendToHardware();
             this.DrawFPS();
 

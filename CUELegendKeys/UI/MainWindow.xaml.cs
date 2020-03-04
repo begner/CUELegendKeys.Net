@@ -60,17 +60,16 @@ namespace CUELegendKeys
         public MainWindow()
         {
             InitializeComponent();
-            
 
             this.Left = 2000;
+            this.Top = 50;
+            this.Width = 1200;
+            this.Height = 1100;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
-
-          
-                // Process Watcher
+             // Process Watcher
              List<ProcessItem> processItems = new List<ProcessItem>(new ProcessItem[] {
                 new ProcessItem("gameClient", "League of Legends"),
                 new ProcessItem("launcher", "LeagueClientUx")
@@ -78,13 +77,11 @@ namespace CUELegendKeys
             var processDetection = new ProcessDetection(processItems);
 
             ClientTypeGame gameClient = new ClientTypeGame(previewImages, AppSettings);
-                      
 
             List<ClientMap> clientMapList = new List<ClientMap>(new ClientMap[] {
                    new ClientMap("gameClient", gameClient),
                    new ClientMap("launcher", new ClientTypeLauncher()),
             });
-
             
             mainApplication = new MainApplication(processDetection, clientMapList, AppSettings);
             mainApplication.Dispatcher = Dispatcher;

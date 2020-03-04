@@ -1,7 +1,9 @@
 ﻿using OpenCvSharp;
+using Rect = OpenCvSharp.Rect;
 using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -56,6 +58,10 @@ namespace CUELegendKeys
         public BitmapSource ActionBaseBS { get; set; } = null;
         public BitmapSource CasteableDetectionBS { get; set; } = null;
 
+        public string Info1 { get; set; } = "";
+        public string Info2 { get; set; } = "";
+        public string Info3 { get; set; } = "";
+
         public abstract void CreateFilteredMat();
         public abstract void DoFrameAction();
 
@@ -101,7 +107,6 @@ namespace CUELegendKeys
                 ActionBaseBS = ActionBase.ToBitmapSource();
                 ActionBaseBS.Freeze();
             }
-            
             if (this.UseCastableDetection())
             {
                 CasteableDetectionBS = CasteableDetection.ToBitmapSource();
@@ -115,29 +120,55 @@ namespace CUELegendKeys
             TextBlock HotspotName = (TextBlock)StatesUI.FindName("HotspotName");
             HotspotName.Text = this.Name;
 
-            TextBlock IsCastable = (TextBlock)StatesUI.FindName("IsCastable");
-            IsCastable.Text = this.IsCastable() ? "YES" : "NO";
-
             // For WPF Control -> Edit button
             StatesUI.SettingHotspot = this.SettingHotspot;
+
             if (CaptureSource != null) { 
                 this.DrawBitmapSource(CaptureSourceBS, "CaptureSource");
             }
+
             if (FilteredMat != null)
             {
                 this.DrawBitmapSource(FilteredMatBS, "FilteredMat");
             }
+
+            Visibility ActionBaseVisibleState = Visibility.Visible;
             if (ActionBase != null)
             {
                 this.DrawBitmapSource(ActionBaseBS, "ActionBase");
+            } 
+            else
+            {
+                ActionBaseVisibleState = Visibility.Collapsed;
             }
+            ((FrameworkElement)StatesUI.FindName("ActionBaseContainer")).Visibility = ActionBaseVisibleState;
+
+
+            Visibility CasteableVisibleState = Visibility.Visible;
             if (this.UseCastableDetection())
             {
                 this.DrawBitmapSource(CasteableDetectionBS, "CasteableDetection");
-
-                TextBlock CastableDetectionColor = (TextBlock)StatesUI.FindName("CastableDetectionColor");
-                CastableDetectionColor.Text = this.CastableDetectionColorString;
             }
+            else
+            {
+                CasteableVisibleState = Visibility.Collapsed;
+            }
+            ((FrameworkElement)StatesUI.FindName("CasteableDetectionContainer")).Visibility = CasteableVisibleState;
+
+
+            Visibility InfoVisibleState = Visibility.Visible;
+            if (Info1 != "" || Info2 != "" || Info3 != "")
+            {
+                ((TextBlock)StatesUI.FindName("Info1")).Text = Info1;
+                ((TextBlock)StatesUI.FindName("Info2")).Text = Info2;
+                ((TextBlock)StatesUI.FindName("Info3")).Text = Info3;
+            }
+            else
+            {
+                InfoVisibleState = Visibility.Collapsed;
+            }
+            ((FrameworkElement)StatesUI.FindName("InfoContainer")).Visibility = InfoVisibleState;
+
         }
 
         public virtual bool IsCastable()

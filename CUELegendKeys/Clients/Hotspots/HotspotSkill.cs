@@ -13,7 +13,13 @@ namespace CUELegendKeys
         public override void DoFrameAction()
         {
             ActionBase = FilteredMat.Clone();
-            Cv2.Rectangle(ActionBase, new Rect(CurrentColorCoord.X-1, CurrentColorCoord.Y-1, 3, 3), new Scalar(0, 255, 0), 1);
+            Cv2.Rectangle(ActionBase, new Rect(CurrentColorCoord.X - 1, CurrentColorCoord.Y - 1, 3, 3), new Scalar(0, 255, 0), 1);
+
+            if (UseCastableDetection()) { 
+                Info1 = this.IsCastable() ? "IS CASTABLE" : "";
+                Vec3b color = CasteableDetection.At<Vec3b>(0, 0);
+                Info2 = color[0].ToString() + ", " + color[1].ToString() + ", " + color[2].ToString();
+            }
         }
 
 
@@ -24,19 +30,18 @@ namespace CUELegendKeys
                 CasteableDetection = new Mat(this.CaptureSource, this.CastableDetectionArea);
                 CasteableDetection = CasteableDetection.Resize(new Size(1, 1), 0, 0, InterpolationFlags.Cubic);
                 ImageFilterHelper.reduceColor(CasteableDetection, 64);
-                Vec3b color = CasteableDetection.At<Vec3b>(0, 0);
-                CastableDetectionColorString = color[0].ToString() + ", " + color[1].ToString() + ", " + color[2].ToString();
+
+              
             }
 
             FilteredMat = CaptureSource;
             if (this.IsCastable() || !UseCastableDetection())
             {
-                Mat image = new Mat(this.CaptureSource, new Rect(this.BorderCut, this.BorderCut, this.CaptureSource.Width - this.BorderCut * 2, this.CaptureSource.Height - this.BorderCut * 2));
-                image = image.Blur(new Size(5, 5), new Point(-1, -1));
-                ImageFilterHelper.killDarkPixel(ref image, 60);
+                FilteredMat = new Mat(this.CaptureSource, new Rect(this.BorderCut, this.BorderCut, this.CaptureSource.Width - this.BorderCut * 2, this.CaptureSource.Height - this.BorderCut * 2));
+                FilteredMat = FilteredMat.Blur(new Size(5, 5), new Point(-1, -1));
+                ImageFilterHelper.killDarkPixel(FilteredMat, 60);
                 // ImageFilterHelper.KillGrayPixel(ref image, 60);
-                ImageFilterHelper.saturation(ref image, 0, 2, 50);
-                FilteredMat = image;
+                ImageFilterHelper.saturation(FilteredMat, 0, 2, 50);
             }
         }
 
