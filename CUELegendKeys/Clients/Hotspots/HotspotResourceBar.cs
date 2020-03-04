@@ -24,7 +24,7 @@ namespace CUELegendKeys
 
         }
 
-        public override List<LedResults.Color> getCurrentColors()
+        public override List<LedResults.Color> getCurrentColors(List<string> LedIdNames)
         {
             List<LedResults.Color> colors = new List<LedResults.Color>();
 

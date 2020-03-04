@@ -36,7 +36,6 @@ namespace CUELegendKeys
 
         public string CastableDetectionColorString { get; set; } = "0,0,0";
         public int BorderCut { get; set; } = 0;
-        public List<string> LedIdNames { get; set; } = new List<string>();
         public WPFUIHotspotStates StatesUI { get; set; }
         public List<Vec3b> CastableDetectionColors { get; set; } = new List<Vec3b>();
         public void SetCastableDetectionColors(List<System.Drawing.Color> colors)
@@ -66,7 +65,7 @@ namespace CUELegendKeys
         public abstract void DoFrameAction();
 
         public SettingHotspot SettingHotspot { get; set; } = null;
-        public abstract List<LedResults.Color> getCurrentColors();
+        public abstract List<LedResults.Color> getCurrentColors(List<string> LedIdNames);
 
         public void Initialize()
         {

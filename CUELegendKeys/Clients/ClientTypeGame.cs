@@ -54,7 +54,6 @@ namespace CUELegendKeys
                 if (Hotspot != null)
                 {
                     Hotspot.Name = SettingHotspot.Name;
-                    Hotspot.LedIdNames = SettingHotspot.LedIdNames;
                     Hotspot.StatesUI = new WPFUIHotspotStates();
                     if (SettingHotspot.ImagePartsOrientation == "V")
                     {
@@ -90,21 +89,24 @@ namespace CUELegendKeys
                 Hotspot.DoAfterFrameAction();
 
 
-                List<LedResults.Color> colors = Hotspot.getCurrentColors();
-                int colorIndex = 0;
-                foreach (string LedIdName in Hotspot.LedIdNames)
+                foreach(SettingLedChain LedChain in Hotspot.SettingHotspot.LedChains)
                 {
-                    CorsairLedId ledId = (CorsairLedId)Enum.Parse(typeof(CorsairLedId), LedIdName);
+                    List<LedResults.Color> colors = Hotspot.getCurrentColors(LedChain.LedIdNames);
+                    int colorIndex = 0;
+                    foreach (string LedIdName in LedChain.LedIdNames)
+                    {
+                        CorsairLedId ledId = (CorsairLedId)Enum.Parse(typeof(CorsairLedId), LedIdName);
 
-                    int curColorIndex = colorIndex % Hotspot.LedIdNames.Count;
-                    LedResults.Color CurColor = colors.ElementAt(curColorIndex);
-                    GetICueBridge().Keyboard.SetLedColor(ledId, CurColor);
-                    
-                    colorIndex++;
+                        int curColorIndex = colorIndex % LedChain.LedIdNames.Count;
+                        LedResults.Color CurColor = colors.ElementAt(curColorIndex);
+                        GetICueBridge().GetDevice(LedChain.DeviceType).SetLedColor(ledId, CurColor);
+                        colorIndex++;
+                    }
                 }
             }
 
             GetICueBridge().Keyboard.sendToHardware();
+            GetICueBridge().LedStrip.sendToHardware();
             this.DrawFPS();
 
             /*

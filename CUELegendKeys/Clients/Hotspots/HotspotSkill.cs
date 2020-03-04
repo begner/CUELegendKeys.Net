@@ -45,7 +45,7 @@ namespace CUELegendKeys
             }
         }
 
-        public override List<LedResults.Color> getCurrentColors()
+        public override List<LedResults.Color> getCurrentColors(List<string> LedIdNames)
         {
             int brightnessTreshold = 50;
             int r = 0;
